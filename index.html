@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rankeia — Anúncios otimizados com IA para marketplace</title>
+  <meta name="description" content="O Rankeia usa inteligência artificial para gerar título, descrição e tags otimizados para Mercado Livre, Shopee, Amazon, TikTok Shop e mais — em 30 segundos." />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       VARIÁVEIS E RESET
+    ============================================================ */
+    :root {
+      --roxo:        #7B3FF2;
+      --roxo-deep:   #5200CC;
+      --roxo-soft:   rgba(123,63,242,0.12);
+      --roxo-border: rgba(123,63,242,0.3);
+      --bg:          #0A0A0F;
+      --surface:     #0F1117;
+      --card:        #13161E;
+      --card2:       #16191F;
+      --text:        #F0F0F2;
+      --muted:       #8A90A2;
+      --border:      rgba(255,255,255,0.07);
+      --border-md:   rgba(255,255,255,0.11);
+      --grad:        linear-gradient(135deg, var(--roxo) 0%, var(--roxo-deep) 100%);
+      --font-t:      'Nunito', sans-serif;
+      --font-b:      'DM Sans', sans-serif;
+      --urgency-h:   40px;
+      --nav-h:       70px;
+      --offset:      110px; /* urgency + nav */
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-b); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ============================================================
+       UTILITÁRIOS
+    ============================================================ */
+    .container { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+    .overline { font-family: var(--font-b); font-size: 12px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--roxo); display: block; margin-bottom: 10px; }
+    .section-h2 { font-family: var(--font-t); font-weight: 900; font-size: clamp(28px,3.5vw,44px); letter-spacing: -1.5px; line-height: 1.1; color: var(--text); }
+    .section-h2 .accent { color: var(--roxo); }
+    .title-sep { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; }
+    .title-sep-line { height: 2px; width: 48px; background: var(--grad); border-radius: 2px; }
+    .title-sep-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--roxo); }
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-lead { font-size: 17px; color: var(--muted); max-width: 600px; margin: 16px auto 0; line-height: 1.7; }
+    .section-lead strong { color: var(--text); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-t); font-weight: 800; font-size: 15px; border-radius: 50px; padding: 13px 28px; cursor: pointer; border: 2px solid transparent; transition: all 0.22s ease; }
+    .btn-primary { background: var(--grad); color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(123,63,242,0.4); }
+    .btn-outline { background: transparent; color: var(--text); border-color: var(--border-md); }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
+       MASCOTE RANK
+       Para substituir o placeholder: trocar o <div class="rank-placeholder"> por
+       <img src="mascote-rank-POSE.png" alt="Rank" class="rank-float" style="max-width:380px;width:100%;" />
+    ============================================================ */
+    @keyframes rank-float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-14px); }
+    }
+    .rank-float { animation: rank-float 3.5s ease-in-out infinite; }
+
+    /* Estilo base do placeholder — mantém mesmo aspect-ratio da imagem final */
+    .rank-placeholder {
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 3/4;
+      background: radial-gradient(ellipse at center, rgba(123,63,242,0.15) 0%, transparent 70%);
+      border: 2px dashed rgba(123,63,242,0.3);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(123,63,242,0.6);
+      font-family: var(--font-t);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      padding: 20px;
+    }
+    .rank-placeholder .rp-emoji { font-size: 52px; line-height: 1; }
+    .rank-placeholder .rp-label { font-size: 13px; }
+    .rank-placeholder .rp-hint { font-size: 10px; opacity: 0.55; }
+
+    /* ============================================================
+       BARRA DE URGÊNCIA
+    ============================================================ */
+    #urgency-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: var(--urgency-h);
+      background: linear-gradient(135deg, #5200CC 0%, #7B3FF2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      font-family: var(--font-t);
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      padding: 0 16px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ub-text { opacity: 0.95; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .ub-btn {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.32);
+      border-radius: 20px;
+      padding: 3px 13px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .ub-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      position: fixed;
+      top: var(--urgency-h);
+      left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 38px; height: 38px; border-radius: 9px; background: var(--roxo); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-mark { font-family: var(--font-t); font-weight: 900; font-size: 21px; letter-spacing: -0.5px; color: var(--text); }
+    .nav-links { display: flex; align-items: center; gap: 2px; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); padding: 8px 14px; border-radius: 8px; transition: color 0.2s, background 0.2s; }
+    .nav-links a:hover { color: var(--text); background: var(--border); }
+    .nav-links a.highlight { color: var(--roxo); font-weight: 700; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-ig { color: rgba(255,255,255,0.55); display: flex; align-items: center; padding: 6px; border-radius: 8px; transition: color 0.2s, background 0.2s; }
+    .nav-ig:hover { color: var(--roxo); background: var(--roxo-soft); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--offset);
+      left: 0; right: 0;
+      z-index: 99;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 28px 28px;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 15px; font-weight: 500; color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+    .mobile-menu a:hover { color: var(--text); }
+    .mobile-menu a.highlight { color: var(--roxo); font-weight: 700; }
+    .mobile-menu .mm-ig { display: flex; align-items: center; gap: 8px; }
+    .mobile-menu .btn { margin-top: 14px; justify-content: center; }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--offset);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -120px;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(123,63,242,0.26) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -80px;
+      width: 450px; height: 450px;
+      background: radial-gradient(circle, rgba(82,0,204,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: 80px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(123,63,242,0.12);
+      border: 1px solid rgba(123,63,242,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--font-t);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--roxo);
+      margin-bottom: 22px;
+    }
+    .hero-h1 {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: clamp(38px, 5vw, 64px);
+      letter-spacing: -2.5px;
+      line-height: 1.0;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .hero-h1 .accent { color: var(--roxo); }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 28px;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .hero-chip {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-md);
+      border-radius: 100px;
+      padding: 4px 12px;
+    }
+    .hero-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .hero-proof { font-size: 13px; color: rgba(138,144,162,0.7); display: flex; align-items: center; gap: 6px; }
+    .hero-visual { display: flex; justify-content: flex-end; align-items: center; }
+
+    /* ============================================================
+       O QUE É O RANKEIA
+    ============================================================ */
+    .o-que-e { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+    .oqe-intro {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 700px;
+      margin: 0 auto 32px;
+      text-align: center;
+    }
+    .oqe-highlight {
+      background: rgba(123,63,242,0.08);
+      border: 1px solid rgba(123,63,242,0.22);
+      border-radius: 16px;
+      padding: 26px 32px;
+      font-family: var(--font-t);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      max-width: 740px;
+      margin: 0 auto 56px;
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+    }
+    .oqe-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .oqe-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 28px;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .oqe-card:hover { border-color: rgba(123,63,242,0.4); transform: translateY(-4px); }
+    .oqe-emoji { font-size: 38px; display: block; margin-bottom: 16px; }
+    .oqe-title { font-family: var(--font-t); font-weight: 900; font-size: 18px; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; }
+    .oqe-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ============================================================
+       COMO FUNCIONA
+    ============================================================ */
+    .como-funciona { padding: 100px 0; background: var(--bg); }
+    .cf-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-bottom: 40px; }
+    .cf-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .cf-card:hover { border-color: rgba(123,63,242,0.4); transform: translateY(-4px); }
+    .cf-num {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: 80px;
+      color: rgba(123,63,242,0.1);
+      line-height: 1;
+      margin-bottom: 14px;
+      letter-spacing: -4px;
+    }
+    .cf-title { font-family: var(--font-t); font-weight: 900; font-size: 20px; color: var(--text); margin-bottom: 12px; letter-spacing: -0.5px; }
+    .cf-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .cf-plataformas {
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.5px;
+      line-height: 2;
+    }
+
+    /* ============================================================
+       BENEFÍCIOS
+    ============================================================ */
+    .beneficios { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+    .ben-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+    .ben-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .ben-card:hover { border-color: rgba(123,63,242,0.4); transform: translateY(-4px); }
+    .ben-emoji { font-size: 30px; flex-shrink: 0; margin-top: 2px; }
+    .ben-title { font-family: var(--font-t); font-weight: 800; font-size: 17px; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+    .ben-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ============================================================
+       ROADMAP
+    ============================================================ */
+    .roadmap { padding: 100px 0; background: #080510; border-top: 1px solid var(--border); }
+    .roadmap-general-badge {
+      display: inline-block;
+      background: rgba(123,63,242,0.12);
+      border: 1px solid rgba(123,63,242,0.3);
+      border-radius: 100px;
+      padding: 5px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--roxo);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-bottom: 32px; }
+    .rm-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.3s;
+    }
+    .rm-card:hover { border-color: rgba(123,63,242,0.3); }
+    .rm-phase-badge {
+      display: inline-block;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .rm-phase-badge.launch { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.28); color: #4ade80; }
+    .rm-phase-badge.soon   { background: rgba(123,63,242,0.12); border: 1px solid rgba(123,63,242,0.3);  color: var(--roxo); }
+    .rm-phase-badge.horizon{ background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+    .rm-title { font-family: var(--font-t); font-weight: 900; font-size: 19px; color: var(--text); margin-bottom: 18px; letter-spacing: -0.5px; }
+    .rm-list { display: flex; flex-direction: column; gap: 10px; }
+    .rm-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .rm-check { color: var(--roxo); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .roadmap-note { text-align: center; font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 32px; line-height: 1.65; }
+
+    /* ============================================================
+       PLANOS (id="planos" — NÃO ALTERAR O ID)
+    ============================================================ */
+    .planos { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+    .planos-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 24px;
+      max-width: 820px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .plano-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px;
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .plano-card:hover { transform: translateY(-4px); }
+    .plano-card.popular { border: 2px solid var(--roxo); }
+    .popular-tag {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--grad);
+      color: #fff;
+      font-family: var(--font-t);
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .plano-scope { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .plano-name { font-family: var(--font-t); font-weight: 900; font-size: 20px; color: var(--text); margin-bottom: 14px; }
+    .plano-old { font-size: 14px; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; }
+    .plano-val {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: 48px;
+      letter-spacing: -2px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .plano-val sup { font-size: 20px; vertical-align: top; margin-top: 10px; display: inline-block; }
+    .plano-val sub { font-size: 14px; font-weight: 500; color: var(--muted); font-family: var(--font-b); }
+    .plano-save {
+      display: inline-block;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 20px;
+    }
+    .plano-sep { height: 1px; background: var(--border); margin-bottom: 20px; }
+    .plano-list { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
+    .plano-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--muted); }
+    .plano-check { color: var(--roxo); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .plano-btn { width: 100%; justify-content: center; }
+    .planos-note {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.65;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ============================================================
+       LISTA DE ESPERA (id="lista-espera" — NÃO ALTERAR O ID)
+    ============================================================ */
+    .waitlist-section {
+      padding: 100px 0;
+      background: linear-gradient(180deg, #0D0818 0%, #1a0533 100%);
+      border-top: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .waitlist-section::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(123,63,242,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .waitlist-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .wl-urgency {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.24);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--font-t);
+      font-size: 13px;
+      font-weight: 700;
+      color: #f87171;
+      margin-bottom: 20px;
+    }
+    .wl-title {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: clamp(26px, 3.5vw, 42px);
+      letter-spacing: -1.5px;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .wl-sub { font-size: 16px; color: rgba(255,255,255,0.58); line-height: 1.7; margin-bottom: 36px; }
+    .wl-form { display: flex; flex-direction: column; gap: 12px; }
+    .wl-field input,
+    .wl-field select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: var(--font-b);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .wl-field input::placeholder { color: rgba(255,255,255,0.28); }
+    .wl-field input:focus,
+    .wl-field select:focus { border-color: var(--roxo); }
+    .wl-field select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A90A2' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+    .wl-field select option { background: #1a0533; color: var(--text); }
+    .wl-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #7B3FF2, #5200CC);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-t);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .wl-submit:hover { opacity: 0.88; transform: translateY(-2px); }
+    .wl-privacy { text-align: center; font-size: 12px; color: rgba(255,255,255,0.32); margin-top: 8px; }
+    .wl-visual { display: flex; justify-content: center; align-items: center; }
+
+    #waitlist-success {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    #waitlist-success h3 {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    #waitlist-success p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #waitlist-success .ws-ig-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--roxo);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    #waitlist-success .ws-ig-link:hover { text-decoration: underline; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer { background: #060609; border-top: 1px solid rgba(255,255,255,0.06); padding: 56px 0 0; }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 40px; }
+    .footer-brand-desc { font-size: 14px; color: var(--muted); line-height: 1.65; max-width: 300px; margin: 12px 0 10px; }
+    .footer-bro { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+    .footer-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer-ig:hover { color: var(--roxo); }
+    .footer-col-title {
+      font-family: var(--font-t);
+      font-weight: 800;
+      font-size: 12px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: var(--muted); transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-links a.hl { color: var(--roxo); font-weight: 600; }
+    .footer-links a.hl:hover { color: #9b6ef5; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.28);
+    }
+
+    /* ============================================================
+       RESPONSIVO
+    ============================================================ */
+    @media (max-width: 960px) {
+      .nav-links, .nav-ig.nav-ig-desktop { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; padding: 60px 0; text-align: center; }
+      .hero-chips { justify-content: center; }
+      .hero-btns { justify-content: center; }
+      .hero-sub { margin: 0 auto 28px; }
+      .hero-visual { justify-content: center; }
+      .hero-proof { justify-content: center; }
+      .oqe-grid { grid-template-columns: 1fr; }
+      .cf-grid { grid-template-columns: 1fr; }
+      .ben-grid { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .planos-grid { grid-template-columns: 1fr; max-width: 480px; }
+      .waitlist-inner { grid-template-columns: 1fr; }
+      .wl-visual { display: none; }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .rank-placeholder { max-width: 260px; }
+    }
+    @media (max-width: 580px) {
+      .hero-h1 { font-size: 34px; letter-spacing: -1.5px; }
+      #urgency-bar { font-size: 11px; gap: 8px; }
+      #urgency-bar .ub-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     BARRA DE URGÊNCIA
+============================================================ -->
+<div id="urgency-bar">
+  <span class="ub-text">🚀 Lançamento 5 de junho · Acesso Fundador com 60% de desconto · Vagas limitadas</span>
+  <a href="#lista-espera" class="ub-btn">Garantir agora →</a>
+</div>
+
+<!-- ============================================================
+     NAV FIXO
+============================================================ -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 36 36" fill="none">
+            <path d="M8 28L16 14L22 21L27 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="27" cy="9" r="3.5" fill="white"/>
+          </svg>
+        </div>
+        <span class="logo-mark">rankeia</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#">Início</a></li>
+        <li><a href="#o-que-e">O que é</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#planos">Planos</a></li>
+        <li><a href="#lista-espera" class="highlight">Lançamento</a></li>
+      </ul>
+      <div class="nav-right">
+        <!-- Instagram Rankeia -->
+        <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener"
+           class="nav-ig nav-ig-desktop" aria-label="Instagram Rankeia">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a href="#lista-espera" class="btn btn-primary" id="nav-cta-desktop" style="display:none;">Garantir desconto →</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MENU MOBILE -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#">Início</a>
+  <a href="#o-que-e">O que é</a>
+  <a href="#como-funciona">Como funciona</a>
+  <a href="#planos">Planos</a>
+  <a href="#lista-espera" class="highlight">Lançamento</a>
+  <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="mm-ig">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+    @rankeiaapp
+  </a>
+  <a href="#lista-espera" class="btn btn-primary">Garantir desconto →</a>
+</div>
+
+<main>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section class="hero" id="inicio">
+  <div class="container">
+    <div class="hero-inner">
+
+      <!-- Coluna esquerda — copy -->
+      <div class="fade-in">
+        <div class="hero-badge">✦ Lançamento oficial · 5 de junho de 2026</div>
+        <h1 class="hero-h1">Seu anúncio no <span class="accent">topo.</span><br>Seus produtos, mais vendidos.</h1>
+        <p class="hero-sub">O Rankeia usa inteligência artificial para gerar título, descrição e tags otimizados para cada marketplace — em 30 segundos. Sem esforço. Sem achismo.</p>
+        <div class="hero-chips">
+          <span class="hero-chip">Mercado Livre</span>
+          <span class="hero-chip">Shopee</span>
+          <span class="hero-chip">Amazon</span>
+          <span class="hero-chip">TikTok Shop</span>
+          <span class="hero-chip">Magalu</span>
+          <span class="hero-chip">Americanas</span>
+        </div>
+        <div class="hero-btns">
+          <a href="#lista-espera" class="btn btn-primary" style="font-size:16px;padding:16px 36px;">Garantir acesso Fundador →</a>
+        </div>
+        <div class="hero-proof">⭐ +200 vendedores já na lista de espera</div>
+      </div>
+
+      <!-- Coluna direita — Mascote Rank (pose: acenando) -->
+      <div class="hero-visual fade-in" style="transition-delay:0.15s;">
+        <img src="mascote-rank-acenando.png"
+             alt="Rank — mascote da Rankeia acenando"
+             class="rank-float"
+             style="max-width:380px;width:100%;display:block;" />
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     O QUE É O RANKEIA  (id="o-que-e")
+============================================================ -->
+<section class="o-que-e" id="o-que-e">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="overline">O que é</span>
+      <h2 class="section-h2">O que é o <span class="accent">Rankeia?</span></h2>
+      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
+    </div>
+    <p class="oqe-intro fade-in">O Rankeia é um SaaS de otimização de anúncios com inteligência artificial para vendedores de marketplace. Cole o nome do produto, escolha a plataforma — e em 30 segundos você tem um anúncio profissional, otimizado para o algoritmo do marketplace.</p>
+    <div class="oqe-highlight fade-in">
+      "Sem saber escrever copy. Sem passar horas pesquisando palavras-chave. Sem depender de ninguém."
+    </div>
+    <div class="oqe-grid">
+      <div class="oqe-card fade-in" style="transition-delay:0.06s;">
+        <span class="oqe-emoji">📦</span>
+        <div class="oqe-title">Vendedor solo</div>
+        <p class="oqe-desc">Tem 10 a 200 produtos e opera sem equipe de marketing.</p>
+      </div>
+      <div class="oqe-card fade-in" style="transition-delay:0.14s;">
+        <span class="oqe-emoji">🏪</span>
+        <div class="oqe-title">Pequena operação</div>
+        <p class="oqe-desc">Vende em mais de um marketplace e perde tempo adaptando o mesmo anúncio para cada plataforma.</p>
+      </div>
+      <div class="oqe-card fade-in" style="transition-delay:0.22s;">
+        <span class="oqe-emoji">🚀</span>
+        <div class="oqe-title">Quem quer crescer</div>
+        <p class="oqe-desc">Sabe que anúncio ruim custa venda, mas não tem tempo nem verba para contratar especialista.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COMO FUNCIONA  (id="como-funciona" — NÃO ALTERAR O ID)
+============================================================ -->
+<section class="como-funciona" id="como-funciona">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="overline">Passo a passo</span>
+      <h2 class="section-h2">Como <span class="accent">funciona</span></h2>
+      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
+      <p class="section-lead">Três passos. Trinta segundos. Anúncio no topo.</p>
+    </div>
+    <div class="cf-grid">
+      <div class="cf-card fade-in" style="transition-delay:0.06s;">
+        <div class="cf-num">01</div>
+        <div class="cf-title">Cole o produto</div>
+        <p class="cf-desc">Nome, categoria e para qual plataforma quer otimizar. Só isso. Sem cadastro complicado, sem configuração.</p>
+      </div>
+      <div class="cf-card fade-in" style="transition-delay:0.14s;">
+        <div class="cf-num">02</div>
+        <div class="cf-title">A IA faz o trabalho</div>
+        <p class="cf-desc">O Rankeia gera título otimizado para SEO, descrição persuasiva e tags estratégicas — no padrão exato exigido por cada marketplace.</p>
+      </div>
+      <div class="cf-card fade-in" style="transition-delay:0.22s;">
+        <div class="cf-num">03</div>
+        <div class="cf-title">Publica e vende mais</div>
+        <p class="cf-desc">Copie, cole e publique. Seu anúncio entra no algoritmo do marketplace com tudo certo para aparecer nas primeiras posições.</p>
+      </div>
+    </div>
+    <p class="cf-plataformas fade-in">
+      ✓ Mercado Livre &nbsp;&nbsp; ✓ Shopee &nbsp;&nbsp; ✓ Amazon &nbsp;&nbsp; ✓ TikTok Shop &nbsp;&nbsp; ✓ Magalu &nbsp;&nbsp; ✓ Americanas
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     MAIORES BENEFÍCIOS
+============================================================ -->
+<section class="beneficios" id="beneficios">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="overline">Por que escolher</span>
+      <h2 class="section-h2">Por que vendedores <span class="accent">escolhem o Rankeia</span></h2>
+      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
+    </div>
+    <div class="ben-grid">
+      <div class="ben-card fade-in" style="transition-delay:0.05s;">
+        <span class="ben-emoji">⚡</span>
+        <div>
+          <div class="ben-title">30 segundos por anúncio</div>
+          <p class="ben-desc">O que levava horas agora leva menos de um minuto. Tempo é dinheiro — especialmente quando você opera sozinho.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.1s;">
+        <span class="ben-emoji">🎯</span>
+        <div>
+          <div class="ben-title">Otimizado para o algoritmo</div>
+          <p class="ben-desc">Cada marketplace tem regras diferentes para título, descrição e tags. O Rankeia conhece todas e aplica automaticamente.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.15s;">
+        <span class="ben-emoji">🔄</span>
+        <div>
+          <div class="ben-title">Multi-plataforma de verdade</div>
+          <p class="ben-desc">Mesmo produto, 4 marketplaces diferentes. O Rankeia adapta o anúncio para o padrão de cada um sem você precisar reescrever.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.2s;">
+        <span class="ben-emoji">📈</span>
+        <div>
+          <div class="ben-title">Mais visibilidade, mais vendas</div>
+          <p class="ben-desc">Anúncios bem escritos aparecem nas primeiras posições. Anúncios nas primeiras posições vendem mais. É matemática.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.25s;">
+        <span class="ben-emoji">🧠</span>
+        <div>
+          <div class="ben-title">Sem precisar saber de copy</div>
+          <p class="ben-desc">Você é especialista no seu produto. O Rankeia é especialista em fazer seu produto aparecer. Cada um no que é bom.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.3s;">
+        <span class="ben-emoji">💰</span>
+        <div>
+          <div class="ben-title">ROI imediato</div>
+          <p class="ben-desc">Uma venda a mais por mês já paga o plano inteiro. Na prática, vendedores relatam melhora visível na primeira semana.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PLANOS  (id="planos" — NÃO ALTERAR O ID)
+============================================================ -->
+<section class="planos" id="planos">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="overline">Preço de Fundador — só até 5 de junho</span>
+      <h2 class="section-h2">Simples. Sem <span class="accent">surpresas.</span></h2>
+      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
+      <p class="section-lead">Assine antes do lançamento e trave o desconto para sempre enquanto mantiver ativo.</p>
+    </div>
+    <div class="planos-grid">
+      <!-- Básico -->
+      <div class="plano-card fade-in" style="transition-delay:0.08s;">
+        <p class="plano-scope">1 marketplace</p>
+        <p class="plano-name">Básico</p>
+        <p class="plano-old">R$47/mês</p>
+        <div class="plano-val"><sup>R$</sup>37<sub>/mês</sub></div>
+        <span class="plano-save">Economize R$10/mês</span>
+        <div class="plano-sep"></div>
+        <ul class="plano-list">
+          <li class="plano-item"><span class="plano-check">✓</span>Geração ilimitada de anúncios</li>
+          <li class="plano-item"><span class="plano-check">✓</span>1 marketplace à escolha</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Histórico completo</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Suporte por e-mail</li>
+        </ul>
+        <a href="#lista-espera" class="btn btn-outline plano-btn">Entrar na lista →</a>
+      </div>
+      <!-- Pro -->
+      <div class="plano-card popular fade-in" style="transition-delay:0.18s;">
+        <div class="popular-tag">Mais popular</div>
+        <p class="plano-scope">Todos os marketplaces</p>
+        <p class="plano-name">Pro</p>
+        <p class="plano-old">R$97/mês</p>
+        <div class="plano-val"><sup>R$</sup>67<sub>/mês</sub></div>
+        <span class="plano-save">Economize R$30/mês</span>
+        <div class="plano-sep"></div>
+        <ul class="plano-list">
+          <li class="plano-item"><span class="plano-check">✓</span>Geração ilimitada</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Todos os 6 marketplaces</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Histórico completo</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Suporte prioritário</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Acesso antecipado às próximas fases</li>
+        </ul>
+        <a href="#lista-espera" class="btn btn-primary plano-btn">Garantir acesso Pro →</a>
+      </div>
+    </div>
+    <p class="planos-note fade-in">* Preço de Fundador garantido enquanto a assinatura estiver ativa. Após o lançamento o valor retorna ao preço normal.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     LISTA DE ESPERA  (id="lista-espera" — NÃO ALTERAR O ID)
+============================================================ -->
+<section class="waitlist-section" id="lista-espera">
+  <div class="container">
+    <div class="waitlist-inner">
+
+      <!-- Conteúdo + Formulário -->
+      <div class="fade-in">
+        <div class="wl-urgency">🔴 Vagas de Fundador se esgotando — garanta a sua</div>
+        <h2 class="wl-title">Garanta seu lugar<br>antes do lançamento</h2>
+        <p class="wl-sub">60% de desconto exclusivo para os primeiros fundadores. Acesso liberado em 5 de junho.</p>
+
+        <div id="waitlist-form-wrap">
+          <form id="waitlist-form" class="wl-form" action="https://formspree.io/f/mredyovd" method="POST" onsubmit="submitWaitlist(event)">
+              <input type="hidden" name="_subject" value="Novo Fundador — Rankeia" />
+            <div class="wl-field">
+              <input type="email" id="wl-email" required placeholder="seu@email.com" />
+            </div>
+            <div class="wl-field">
+              <input type="tel" id="wl-phone" placeholder="(11) 99999-9999" />
+            </div>
+            <div class="wl-field">
+              <select id="wl-marketplace">
+                <option value="" disabled selected>Qual marketplace você mais usa?</option>
+                <option value="ml">Mercado Livre</option>
+                <option value="shopee">Shopee</option>
+                <option value="amazon">Amazon</option>
+                <option value="tiktok">TikTok Shop</option>
+                <option value="magalu">Magalu</option>
+                <option value="americanas">Americanas</option>
+                <option value="todos">Todos</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;">
+              <input type="checkbox" id="lgpd-consent" name="lgpd_consent"
+                     required value="sim"
+                     style="margin-top:3px;accent-color:#7B3FF2;width:16px;height:16px;flex-shrink:0;" />
+              <label for="lgpd-consent"
+                     style="font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;cursor:pointer;">
+                Concordo com a
+                <a href="privacidade.html" target="_blank"
+                   style="color:#7B3FF2;text-decoration:underline;">
+                  Política de Privacidade
+                </a>
+                e autorizo o uso dos meus dados para contato sobre o Rankeia.
+              </label>
+            </div>
+            <button type="submit" class="wl-submit">Quero ser Fundador →</button>
+          </form>
+          <p class="wl-privacy">🔒 Sem spam. Seus dados estão protegidos.</p>
+        </div>
+
+        <!-- Estado de sucesso — exibido após submit -->
+        <div id="waitlist-success">
+          <img src="mascote-rank-joinha.png"
+               alt="Rank comemorando"
+               class="rank-float"
+               style="max-width:160px;margin:0 auto 20px;display:block;" />
+          <h3>Você está na lista! 🎉</h3>
+          <p>Vamos te avisar no dia 5 de junho com seu link de acesso e desconto de Fundador. Fique de olho no seu e-mail.</p>
+          <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="ws-ig-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            Siga @rankeiaapp para não perder nenhuma novidade →
+          </a>
+        </div>
+      </div>
+
+      <!-- Visual — Mascote Rank (pose: trofeu) -->
+      <div class="wl-visual fade-in" style="transition-delay:0.15s;">
+        <img src="mascote-rank-trofeu.png"
+             alt="Rank com troféu"
+             class="rank-float"
+             style="max-width:320px;width:100%;display:block;" />
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Coluna esquerda: marca + Instagram -->
+      <div>
+        <a href="#" class="logo" style="display:inline-flex;margin-bottom:6px;">
+          <div class="logo-icon" style="width:32px;height:32px;border-radius:8px;">
+            <svg width="17" height="17" viewBox="0 0 36 36" fill="none">
+              <path d="M8 28L16 14L22 21L27 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="9" r="3.5" fill="white"/>
+            </svg>
+          </div>
+          <span class="logo-mark" style="font-size:18px;">rankeia</span>
+        </a>
+        <p class="footer-brand-desc">Otimização de anúncios com IA para vendedores de marketplace.</p>
+        <p class="footer-bro">Um produto da BRO Growth</p>
+        <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="footer-ig">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          @rankeiaapp
+        </a>
+      </div>
+      <!-- Coluna direita: links -->
+      <div>
+        <p class="footer-col-title">Navegação</p>
+        <nav class="footer-links">
+          <a href="#o-que-e">O que é</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#planos">Planos</a>
+          <a href="#lista-espera" class="hl">Lançamento</a>
+          <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="hl">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            @rankeiaapp
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Rankeia · Um produto da BRO Growth · Todos os direitos reservados
+    · <a href="privacidade.html" target="_blank"
+         style="color:rgba(255,255,255,0.3);text-decoration:none;">
+        Política de Privacidade
+      </a>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+  /* ── Hamburger ── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ── Nav CTA desktop ── */
+  function checkNavCta() {
+    document.getElementById('nav-cta-desktop').style.display =
+      window.innerWidth > 960 ? 'inline-flex' : 'none';
+  }
+  checkNavCta();
+  window.addEventListener('resize', checkNavCta);
+
+  /* ── Smooth scroll (compensa altura do nav fixo) ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#') return;
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      const offset = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--offset')) || 116;
+      window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - offset, behavior: 'smooth' });
+    });
+  });
+
+  /* ── Fade-in via IntersectionObserver ── */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  /* ── Nav opacidade ao rolar ── */
+  const nav = document.querySelector('.nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = scrollY > 24
+      ? 'rgba(10,10,15,0.97)'
+      : 'rgba(10,10,15,0.85)';
+  }, { passive: true });
+
+  /* ── Countdown — Lançamento 05/06/2026 00:00:00 BRT (UTC-3) ── */
+  (function startCountdown() {
+    const launchDate = new Date('2026-06-05T00:00:00-03:00');
+
+    function tick() {
+      const diff = launchDate.getTime() - Date.now();
+      if (diff <= 0) {
+        document.querySelectorAll('.countdown-display').forEach(el => {
+          el.textContent = '🚀 O Rankeia está no ar!';
+        });
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const str =
+        String(d).padStart(2,'0') + 'd · ' +
+        String(h).padStart(2,'0') + 'h · ' +
+        String(m).padStart(2,'0') + 'min · ' +
+        String(s).padStart(2,'0') + 'seg';
+      document.querySelectorAll('.countdown-display').forEach(el => {
+        el.textContent = str;
+      });
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  /* ── Formulário Lista de Espera ── */
+  function submitWaitlist(e) {
+    e.preventDefault();
+    const email = document.getElementById('wl-email').value.trim();
+    if (!email) return;
+
+    /* ── Integrar com sua API / Mailchimp / Brevo aqui ──
+       Exemplo: fetch('/api/waitlist', { method: 'POST', body: JSON.stringify({ email, phone, marketplace }) })
+    */
+    console.log('Waitlist submission:', {
+      email,
+      phone:       document.getElementById('wl-phone').value,
+      marketplace: document.getElementById('wl-marketplace').value
+    });
+
+    /* Esconde form, exibe mensagem de sucesso */
+    document.getElementById('waitlist-form-wrap').style.display = 'none';
+    document.getElementById('waitlist-success').style.display   = 'block';
+  }
+</script>
+</body>
+</html>
