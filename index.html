@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rankeia — O Rankeia faz em 30 segundos o que você levava 2 horas para fazer.</title>
-  <meta name="description" content="Plataforma de otimização de anúncios com Inteligência Artificial. Título SEO, descrição persuasiva e tags para Mercado Livre, Shopee, Amazon e TikTok Shop em 30 segundos." />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <title>Rankeia — Anúncios otimizados com IA para marketplace</title>
+  <meta name="description" content="O Rankeia usa inteligência artificial para gerar título, descrição e tags otimizados para Mercado Livre, Shopee, Amazon, TikTok Shop e mais — em 30 segundos." />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
        VARIÁVEIS E RESET
@@ -26,7 +26,9 @@
       --grad:        linear-gradient(135deg, var(--roxo) 0%, var(--roxo-deep) 100%);
       --font-t:      'Nunito', sans-serif;
       --font-b:      'DM Sans', sans-serif;
-      --nav-h:       110px;
+      --urgency-h:   40px;
+      --nav-h:       70px;
+      --offset:      110px; /* urgency + nav */
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -39,11 +41,14 @@
     ============================================================ */
     .container { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 28px; }
     .overline { font-family: var(--font-b); font-size: 12px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--roxo); display: block; margin-bottom: 10px; }
-    .section-h2 { font-family: var(--font-t); font-weight: 900; font-size: clamp(28px, 3.5vw, 42px); letter-spacing: -1.5px; line-height: 1.1; color: var(--text); }
+    .section-h2 { font-family: var(--font-t); font-weight: 900; font-size: clamp(28px,3.5vw,44px); letter-spacing: -1.5px; line-height: 1.1; color: var(--text); }
     .section-h2 .accent { color: var(--roxo); }
     .title-sep { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px; }
     .title-sep-line { height: 2px; width: 48px; background: var(--grad); border-radius: 2px; }
     .title-sep-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--roxo); }
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-lead { font-size: 17px; color: var(--muted); max-width: 600px; margin: 16px auto 0; line-height: 1.7; }
+    .section-lead strong { color: var(--text); }
 
     .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-t); font-weight: 800; font-size: 15px; border-radius: 50px; padding: 13px 28px; cursor: pointer; border: 2px solid transparent; transition: all 0.22s ease; }
     .btn-primary { background: var(--grad); color: #fff; }
@@ -55,9 +60,93 @@
     .fade-in.visible { opacity: 1; transform: translateY(0); }
 
     /* ============================================================
+       MASCOTE RANK
+       Para substituir o placeholder: trocar o <div class="rank-placeholder"> por
+       <img src="mascote-rank-POSE.png" alt="Rank" class="rank-float" style="max-width:380px;width:100%;" />
+    ============================================================ */
+    @keyframes rank-float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-14px); }
+    }
+    .rank-float { animation: rank-float 3.5s ease-in-out infinite; }
+
+    /* Estilo base do placeholder — mantém mesmo aspect-ratio da imagem final */
+    .rank-placeholder {
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 3/4;
+      background: radial-gradient(ellipse at center, rgba(123,63,242,0.15) 0%, transparent 70%);
+      border: 2px dashed rgba(123,63,242,0.3);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(123,63,242,0.6);
+      font-family: var(--font-t);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      padding: 20px;
+    }
+    .rank-placeholder .rp-emoji { font-size: 52px; line-height: 1; }
+    .rank-placeholder .rp-label { font-size: 13px; }
+    .rank-placeholder .rp-hint { font-size: 10px; opacity: 0.55; }
+
+    /* ============================================================
+       BARRA DE URGÊNCIA
+    ============================================================ */
+    #urgency-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: var(--urgency-h);
+      background: linear-gradient(135deg, #5200CC 0%, #7B3FF2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      font-family: var(--font-t);
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      padding: 0 16px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ub-text { opacity: 0.95; flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .ub-btn {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.32);
+      border-radius: 20px;
+      padding: 3px 13px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .ub-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* ============================================================
        NAV
     ============================================================ */
-    .nav { position: fixed; top: 40px; left: 0; right: 0; z-index: 100; height: var(--nav-h); display: flex; align-items: center; background: rgba(10,10,15,0.85); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); transition: background 0.3s; }
+    .nav {
+      position: fixed;
+      top: var(--urgency-h);
+      left: 0; right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .logo { display: flex; align-items: center; gap: 10px; }
     .logo-icon { width: 38px; height: 38px; border-radius: 9px; background: var(--roxo); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -65,430 +154,525 @@
     .nav-links { display: flex; align-items: center; gap: 2px; }
     .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); padding: 8px 14px; border-radius: 8px; transition: color 0.2s, background 0.2s; }
     .nav-links a:hover { color: var(--text); background: var(--border); }
-    .nav-social { display: flex; align-items: center; gap: 8px; }
-    .social-icon { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-md); display: flex; align-items: center; justify-content: center; color: var(--muted); transition: color 0.2s, border-color 0.2s, background 0.2s; }
-    .social-icon:hover { color: var(--text); border-color: var(--roxo-border); background: var(--roxo-soft); }
+    .nav-links a.highlight { color: var(--roxo); font-weight: 700; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-ig { color: rgba(255,255,255,0.55); display: flex; align-items: center; padding: 6px; border-radius: 8px; transition: color 0.2s, background 0.2s; }
+    .nav-ig:hover { color: var(--roxo); background: var(--roxo-soft); }
     .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
     .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
     .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-    .mobile-menu { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99; background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 28px 28px; flex-direction: column; gap: 4px; }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--offset);
+      left: 0; right: 0;
+      z-index: 99;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 28px 28px;
+      flex-direction: column;
+      gap: 4px;
+    }
     .mobile-menu.open { display: flex; }
     .mobile-menu a { font-size: 15px; font-weight: 500; color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
     .mobile-menu a:hover { color: var(--text); }
+    .mobile-menu a.highlight { color: var(--roxo); font-weight: 700; }
+    .mobile-menu .mm-ig { display: flex; align-items: center; gap: 8px; }
     .mobile-menu .btn { margin-top: 14px; justify-content: center; }
 
     /* ============================================================
        HERO
     ============================================================ */
-    .hero { min-height: 100vh; display: flex; align-items: center; padding-top: var(--nav-h); position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; top: -80px; right: -120px; width: 780px; height: 780px; background: radial-gradient(circle, rgba(123,63,242,0.28) 0%, transparent 65%); pointer-events: none; }
-    .hero::after { content: ''; position: absolute; bottom: -60px; left: -60px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(82,0,204,0.15) 0%, transparent 70%); pointer-events: none; }
-    .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 80px 0; position: relative; z-index: 1; }
-    .hero-overline { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-b); font-size: 12px; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: var(--roxo); margin-bottom: 20px; }
-    .hero-overline::before { content: ''; display: block; width: 28px; height: 2px; background: var(--roxo); border-radius: 2px; }
-    .hero-h1 { font-family: var(--font-t); font-weight: 900; font-size: clamp(36px, 4.8vw, 58px); letter-spacing: -2px; line-height: 1.02; color: var(--text); margin-bottom: 6px; }
-    .hero-h1 .purple { color: var(--roxo); }
-    .hero-tagline { font-family: var(--font-t); font-weight: 700; font-size: clamp(16px, 2vw, 22px); color: var(--muted); margin: 16px 0 22px; line-height: 1.4; letter-spacing: -0.5px; }
-    .hero-tagline strong { color: var(--text); }
-    .hero-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0; margin-bottom: 28px; }
-    .hero-tag { font-family: var(--font-t); font-weight: 700; font-size: 14px; color: var(--text); }
-    .hero-sep { width: 5px; height: 5px; border-radius: 50%; background: var(--roxo); margin: 0 10px; flex-shrink: 0; }
-    .hero-desc { font-size: 16px; color: var(--muted); line-height: 1.75; max-width: 460px; margin-bottom: 36px; }
-    .hero-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-    .btn-play-group { display: flex; align-items: center; gap: 10px; font-family: var(--font-t); font-weight: 700; font-size: 14px; color: var(--text); cursor: pointer; transition: opacity 0.2s; }
-    .btn-play-group:hover { opacity: 0.8; }
-    .btn-play { width: 42px; height: 42px; border-radius: 50%; background: var(--grad); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-
-    /* Mockup browser */
-    .hero-visual { position: relative; display: flex; align-items: flex-start; justify-content: flex-end; }
-    .browser-mock { width: 100%; max-width: 500px; background: var(--card); border: 1px solid var(--border-md); border-radius: 14px; overflow: hidden; box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04); }
-    .browser-bar { background: #1A1D26; padding: 11px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
-    .browser-dots { display: flex; gap: 5px; }
-    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .browser-url { flex: 1; background: var(--card); border-radius: 6px; padding: 5px 12px; font-size: 11px; color: var(--muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
-    .browser-body { padding: 20px; }
-    .mock-label { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-    .mock-input { background: rgba(255,255,255,0.04); border: 1px solid var(--border-md); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
-    .mock-input-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--grad); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .mock-progress-wrap { margin-bottom: 14px; }
-    .mock-progress-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
-    .mock-progress-pct { color: var(--roxo); font-weight: 600; }
-    .mock-progress-bg { height: 3px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; }
-    .mock-progress-fill { height: 100%; border-radius: 10px; background: var(--grad); width: 0; animation: fill-bar 2.2s ease 0.6s forwards; }
-    @keyframes fill-bar { to { width: 100%; } }
-    .mock-result { background: rgba(123,63,242,0.07); border: 1px solid rgba(123,63,242,0.2); border-radius: 10px; padding: 13px; }
-    .mock-result-title { font-family: var(--font-t); font-weight: 700; font-size: 12px; line-height: 1.5; color: var(--text); margin-bottom: 10px; }
-    .mock-result-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-    .mock-tag { background: rgba(123,63,242,0.14); border: 1px solid rgba(123,63,242,0.22); border-radius: 100px; padding: 3px 9px; font-size: 10px; color: var(--roxo); }
-    .phone-mock { position: absolute; bottom: -36px; right: -32px; width: 150px; background: var(--card); border: 1px solid var(--border-md); border-radius: 22px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    .phone-top { background: #1A1D26; padding: 10px 10px 8px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
-    .phone-notch { width: 40px; height: 5px; border-radius: 10px; background: rgba(255,255,255,0.12); }
-    .phone-body { padding: 10px; }
-    .phone-stat { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; }
-    .phone-stat-label { font-size: 8px; color: var(--muted); margin-bottom: 3px; }
-    .phone-stat-value { font-family: var(--font-t); font-weight: 900; font-size: 18px; color: var(--roxo); letter-spacing: -1px; }
-    .phone-stat-sub { font-size: 8px; color: var(--muted); margin-top: 2px; }
-    .phone-badge { background: var(--grad); border-radius: 8px; padding: 7px 10px; font-family: var(--font-t); font-weight: 800; font-size: 10px; color: #fff; text-align: center; }
-
-    /* ============================================================
-       SEÇÃO PROBLEMA — Dor do vendedor
-    ============================================================ */
-    .problem { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
-    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-    .problem-card { border-radius: 16px; padding: 40px 36px; position: relative; overflow: hidden; }
-    .problem-card.want { background: rgba(123,63,242,0.06); border: 1px solid rgba(123,63,242,0.2); }
-    .problem-card.reality { background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
-    .problem-card-icon { margin-bottom: 24px; }
-    .problem-card-title { font-family: var(--font-t); font-weight: 900; font-size: clamp(20px, 2.5vw, 26px); letter-spacing: -0.5px; color: var(--text); margin-bottom: 10px; }
-    .problem-card-desc { font-size: 15px; color: var(--muted); line-height: 1.7; }
-    /* Gráfico de barras SVG "querer" */
-    .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 60px; margin-bottom: 8px; }
-    .bar { border-radius: 4px 4px 0 0; background: var(--grad); }
-    /* Caixas empilhadas "realidade" */
-    .boxes-visual { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .box-item { width: 22px; height: 22px; border-radius: 4px; background: rgba(255,255,255,0.08); border: 1px solid var(--border-md); }
-    .problem-alert { background: rgba(123,63,242,0.1); border: 1px solid rgba(123,63,242,0.3); border-radius: 12px; padding: 20px 24px; text-align: center; font-size: 15px; color: var(--text); line-height: 1.65; }
-    .problem-alert strong { color: var(--roxo); }
-
-    /* ============================================================
-       MOTOR RANKEIA — Fluxo Input → Processamento → Output
-    ============================================================ */
-    .motor { padding: 100px 0; background: var(--bg); }
-    .motor-header { text-align: center; margin-bottom: 64px; }
-    .motor-header .lead { font-size: 17px; color: var(--muted); max-width: 620px; margin: 16px auto 0; line-height: 1.7; }
-    .motor-header .lead strong { color: var(--text); }
-    .motor-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 0; }
-    .motor-arrow { display: flex; align-items: center; justify-content: center; padding: 0 16px; color: var(--roxo); }
-    .motor-step { border-radius: 14px; padding: 28px; position: relative; overflow: hidden; }
-    .motor-step.input { background: var(--card2); border: 1px solid var(--border-md); }
-    .motor-step.engine { background: linear-gradient(135deg, #1a0a3a 0%, #2d0a6b 100%); border: 2px solid var(--roxo); box-shadow: 0 0 40px rgba(123,63,242,0.25); }
-    .motor-step.output { background: var(--card2); border: 2px solid rgba(123,63,242,0.35); }
-    .motor-step-label { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
-    .motor-step.engine .motor-step-label { color: rgba(255,255,255,0.5); }
-    .motor-step-title { font-family: var(--font-t); font-weight: 900; font-size: 17px; color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px; }
-    .motor-step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-    .motor-step.engine .motor-step-desc { color: rgba(255,255,255,0.6); }
-    .motor-input-field { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--muted); margin-top: 12px; font-style: italic; }
-    .motor-engine-gears { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
-    .gear { width: 32px; height: 32px; border-radius: 8px; background: rgba(123,63,242,0.3); display: flex; align-items: center; justify-content: center; }
-    .motor-badge { display: inline-block; background: var(--roxo); border-radius: 100px; padding: 4px 14px; font-family: var(--font-t); font-weight: 800; font-size: 12px; color: #fff; margin-top: 8px; }
-    .motor-output-list { margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
-    .motor-output-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-    .motor-output-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--roxo); flex-shrink: 0; }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--offset);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -120px;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(123,63,242,0.26) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -80px;
+      width: 450px; height: 450px;
+      background: radial-gradient(circle, rgba(82,0,204,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: 80px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(123,63,242,0.12);
+      border: 1px solid rgba(123,63,242,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--font-t);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--roxo);
+      margin-bottom: 22px;
+    }
+    .hero-h1 {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: clamp(38px, 5vw, 64px);
+      letter-spacing: -2.5px;
+      line-height: 1.0;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .hero-h1 .accent { color: var(--roxo); }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 28px;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .hero-chip {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-md);
+      border-radius: 100px;
+      padding: 4px 12px;
+    }
+    .hero-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .hero-proof { font-size: 13px; color: rgba(138,144,162,0.7); display: flex; align-items: center; gap: 6px; }
+    .hero-visual { display: flex; justify-content: flex-end; align-items: center; }
 
     /* ============================================================
-       SERVIÇOS / BLUEPRINT DO VENDEDOR
+       O QUE É O RANKEIA
     ============================================================ */
-    .services { background: var(--surface); padding: 100px 0; border-top: 1px solid var(--border); }
-    .services-header { text-align: center; margin-bottom: 56px; }
-    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .service-card { background: var(--card2); border: 1px solid var(--border); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 20px; transition: border-color 0.25s, transform 0.25s; position: relative; overflow: hidden; }
-    .service-card:hover { border-color: var(--roxo-border); transform: translateY(-4px); }
-    .svc-icon-wrap { width: 60px; height: 60px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 8px 24px rgba(123,63,242,0.35); }
-    .svc-title { font-family: var(--font-t); font-weight: 900; font-size: 19px; letter-spacing: -0.5px; color: var(--text); }
-    .svc-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
-    .svc-list { display: flex; flex-direction: column; gap: 9px; }
-    .svc-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); }
-    .svc-check { width: 18px; height: 18px; border-radius: 50%; background: rgba(123,63,242,0.15); border: 1px solid rgba(123,63,242,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-    .svc-check svg { color: var(--roxo); }
-    .svc-mockup { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--card); padding: 14px; margin-top: auto; }
-    .svc-mk-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-    .svc-mk-label { font-size: 10px; color: var(--muted); }
-    .svc-mk-val { font-family: var(--font-t); font-weight: 900; font-size: 18px; color: var(--roxo); }
-    .svc-mk-bar-bg { height: 3px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
-    .svc-mk-bar-fill { height: 100%; border-radius: 10px; background: var(--grad); }
+    .o-que-e { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+    .oqe-intro {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 700px;
+      margin: 0 auto 32px;
+      text-align: center;
+    }
+    .oqe-highlight {
+      background: rgba(123,63,242,0.08);
+      border: 1px solid rgba(123,63,242,0.22);
+      border-radius: 16px;
+      padding: 26px 32px;
+      font-family: var(--font-t);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      max-width: 740px;
+      margin: 0 auto 56px;
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+    }
+    .oqe-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .oqe-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 28px;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .oqe-card:hover { border-color: rgba(123,63,242,0.4); transform: translateY(-4px); }
+    .oqe-emoji { font-size: 38px; display: block; margin-bottom: 16px; }
+    .oqe-title { font-family: var(--font-t); font-weight: 900; font-size: 18px; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; }
+    .oqe-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
     /* ============================================================
-       STRIP DE FEATURES
+       COMO FUNCIONA
     ============================================================ */
-    .features-strip { background: #080A10; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 52px 0; }
-    .features-strip-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
-    .strip-item { display: flex; align-items: flex-start; gap: 16px; padding: 0 32px; border-right: 1px solid var(--border); }
-    .strip-item:first-child { padding-left: 0; }
-    .strip-item:last-child { border-right: none; }
-    .strip-icon-wrap { width: 52px; height: 52px; border-radius: 12px; background: var(--roxo-soft); border: 1px solid var(--roxo-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .strip-title { font-family: var(--font-t); font-weight: 800; font-size: 15px; color: var(--text); margin-bottom: 5px; }
-    .strip-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .como-funciona { padding: 100px 0; background: var(--bg); }
+    .cf-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-bottom: 40px; }
+    .cf-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .cf-card:hover { border-color: rgba(123,63,242,0.4); transform: translateY(-4px); }
+    .cf-num {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: 80px;
+      color: rgba(123,63,242,0.1);
+      line-height: 1;
+      margin-bottom: 14px;
+      letter-spacing: -4px;
+    }
+    .cf-title { font-family: var(--font-t); font-weight: 900; font-size: 20px; color: var(--text); margin-bottom: 12px; letter-spacing: -0.5px; }
+    .cf-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .cf-plataformas {
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.5px;
+      line-height: 2;
+    }
 
     /* ============================================================
-       ARSENAL DO AFILIADO
+       BENEFÍCIOS
     ============================================================ */
-    .arsenal { padding: 100px 0; background: var(--bg); }
-    .arsenal-header { text-align: center; margin-bottom: 56px; }
-    .arsenal-header .lead { font-size: 16px; color: var(--muted); max-width: 540px; margin: 12px auto 0; line-height: 1.7; }
-    .arsenal-layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: start; }
-
-    /* Coluna 1: variações */
-    .arsenal-col-title { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
-    .arsenal-input-box { background: var(--card2); border: 2px solid var(--roxo); border-radius: 14px; padding: 20px; margin-bottom: 24px; }
-    .arsenal-input-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-    .arsenal-input-val { font-family: var(--font-t); font-weight: 800; font-size: 14px; color: var(--text); }
-    .arsenal-variations { display: flex; flex-direction: column; gap: 10px; }
-    .arsenal-var { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-family: var(--font-t); font-weight: 700; font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
-    .arsenal-var:hover { border-color: var(--roxo-border); color: var(--text); }
-    .arsenal-var-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grad); flex-shrink: 0; }
-
-    /* Coluna 2: outputs */
-    .arsenal-outputs { display: flex; flex-direction: column; gap: 10px; }
-    .arsenal-output { background: var(--card2); border: 1px solid var(--border-md); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: border-color 0.2s, transform 0.2s; }
-    .arsenal-output:hover { border-color: var(--roxo-border); transform: translateX(4px); }
-    .arsenal-output-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--roxo-soft); border: 1px solid var(--roxo-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .arsenal-output-name { font-family: var(--font-t); font-weight: 700; font-size: 13px; color: var(--text); }
-
-    /* Coluna 3: destaque */
-    .arsenal-highlight { background: linear-gradient(135deg, #1a0a3a 0%, #2d0a6b 100%); border: 2px solid var(--roxo); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: center; min-height: 280px; }
-    .arsenal-highlight-title { font-family: var(--font-t); font-weight: 900; font-size: clamp(22px, 2.5vw, 28px); letter-spacing: -1px; line-height: 1.2; color: #fff; margin-bottom: 16px; }
-    .arsenal-highlight-desc { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.65; }
+    .beneficios { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+    .ben-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+    .ben-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .ben-card:hover { border-color: rgba(123,63,242,0.4); transform: translateY(-4px); }
+    .ben-emoji { font-size: 30px; flex-shrink: 0; margin-top: 2px; }
+    .ben-title { font-family: var(--font-t); font-weight: 800; font-size: 17px; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+    .ben-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
     /* ============================================================
-       MULTI-PLATAFORMA EM UM ÚNICO FLUXO
+       ROADMAP
     ============================================================ */
-    .multiplatform { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
-    .multiplatform-header { text-align: center; margin-bottom: 64px; }
-    .multiplatform-layout { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: center; }
-    .mp-input { background: linear-gradient(135deg, #1a0a3a 0%, #2d0a6b 100%); border: 2px solid var(--roxo); border-radius: 16px; padding: 36px 28px; text-align: center; box-shadow: 0 0 40px rgba(123,63,242,0.2); }
-    .mp-input-title { font-family: var(--font-t); font-weight: 900; font-size: 22px; color: #fff; letter-spacing: -0.5px; margin-bottom: 10px; }
-    .mp-input-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
-    .mp-connector { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; position: relative; }
-    .mp-line { width: 2px; flex: 1; background: linear-gradient(180deg, var(--roxo) 0%, var(--roxo-deep) 100%); min-height: 300px; }
-    .mp-platforms { display: flex; flex-direction: column; gap: 12px; }
-    .mp-platform { background: var(--card2); border: 1px solid var(--border-md); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; transition: border-color 0.2s, transform 0.2s; }
-    .mp-platform:hover { border-color: var(--roxo-border); transform: translateX(6px); }
-    .mp-platform-name { font-family: var(--font-t); font-weight: 800; font-size: 15px; color: var(--text); display: flex; align-items: center; gap: 10px; }
-    .mp-platform-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .mp-native-badge { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--roxo); background: var(--roxo-soft); border: 1px solid var(--roxo-border); border-radius: 100px; padding: 3px 10px; }
-    .mp-footer-note { text-align: center; margin-top: 40px; font-size: 15px; color: var(--muted); line-height: 1.65; }
-    .mp-footer-note strong { color: var(--text); }
+    .roadmap { padding: 100px 0; background: #080510; border-top: 1px solid var(--border); }
+    .roadmap-general-badge {
+      display: inline-block;
+      background: rgba(123,63,242,0.12);
+      border: 1px solid rgba(123,63,242,0.3);
+      border-radius: 100px;
+      padding: 5px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--roxo);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-bottom: 32px; }
+    .rm-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.3s;
+    }
+    .rm-card:hover { border-color: rgba(123,63,242,0.3); }
+    .rm-phase-badge {
+      display: inline-block;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .rm-phase-badge.launch { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.28); color: #4ade80; }
+    .rm-phase-badge.soon   { background: rgba(123,63,242,0.12); border: 1px solid rgba(123,63,242,0.3);  color: var(--roxo); }
+    .rm-phase-badge.horizon{ background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+    .rm-title { font-family: var(--font-t); font-weight: 900; font-size: 19px; color: var(--text); margin-bottom: 18px; letter-spacing: -0.5px; }
+    .rm-list { display: flex; flex-direction: column; gap: 10px; }
+    .rm-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .rm-check { color: var(--roxo); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .roadmap-note { text-align: center; font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 32px; line-height: 1.65; }
 
     /* ============================================================
-       TABELA DE COBERTURA NATIVA
+       PLANOS (id="planos" — NÃO ALTERAR O ID)
     ============================================================ */
-    .coverage { padding: 100px 0; background: var(--bg); }
-    .coverage-header { text-align: center; margin-bottom: 48px; }
-    .coverage-table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); }
-    .coverage-table { width: 100%; border-collapse: collapse; }
-    .coverage-table th { background: rgba(123,63,242,0.1); border-bottom: 2px solid var(--roxo-border); padding: 16px 20px; font-family: var(--font-t); font-weight: 800; font-size: 14px; color: var(--muted); text-align: center; letter-spacing: 0.5px; }
-    .coverage-table th:first-child { text-align: left; }
-    .coverage-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--muted); text-align: center; }
-    .coverage-table td:first-child { text-align: left; font-family: var(--font-t); font-weight: 700; font-size: 15px; color: var(--text); }
-    .coverage-table tr:last-child td { border-bottom: none; }
-    .coverage-table tr:hover td { background: rgba(255,255,255,0.02); }
-    .coverage-check { color: var(--roxo); font-size: 20px; }
-    .mk-row-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+    .planos { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+    .planos-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 24px;
+      max-width: 820px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .plano-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px;
+      position: relative;
+      transition: transform 0.3s;
+    }
+    .plano-card:hover { transform: translateY(-4px); }
+    .plano-card.popular { border: 2px solid var(--roxo); }
+    .popular-tag {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--grad);
+      color: #fff;
+      font-family: var(--font-t);
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .plano-scope { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .plano-name { font-family: var(--font-t); font-weight: 900; font-size: 20px; color: var(--text); margin-bottom: 14px; }
+    .plano-old { font-size: 14px; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; }
+    .plano-val {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: 48px;
+      letter-spacing: -2px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .plano-val sup { font-size: 20px; vertical-align: top; margin-top: 10px; display: inline-block; }
+    .plano-val sub { font-size: 14px; font-weight: 500; color: var(--muted); font-family: var(--font-b); }
+    .plano-save {
+      display: inline-block;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-bottom: 20px;
+    }
+    .plano-sep { height: 1px; background: var(--border); margin-bottom: 20px; }
+    .plano-list { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
+    .plano-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--muted); }
+    .plano-check { color: var(--roxo); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .plano-btn { width: 100%; justify-content: center; }
+    .planos-note {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.65;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
     /* ============================================================
-       ROI EM TEMPO
+       LISTA DE ESPERA (id="lista-espera" — NÃO ALTERAR O ID)
     ============================================================ */
-    .roi { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
-    .roi-header { text-align: center; margin-bottom: 16px; }
-    .roi-sub { text-align: center; font-size: 16px; color: var(--muted); margin-bottom: 56px; line-height: 1.65; }
-    .roi-sub strong { color: var(--text); }
-    .roi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
-    .roi-card { background: var(--card2); border: 1px solid var(--border); border-radius: 16px; padding: 32px; position: relative; overflow: hidden; }
-    .roi-products { font-size: 13px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 24px; }
-    .roi-comparison { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
-    .roi-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
-    .roi-bar { width: 100%; border-radius: 6px 6px 0 0; position: relative; min-height: 12px; }
-    .roi-bar.manual { background: rgba(255,255,255,0.15); }
-    .roi-bar.rankeia { background: var(--grad); }
-    .roi-bar-val { font-family: var(--font-t); font-weight: 900; font-size: 20px; letter-spacing: -0.5px; }
-    .roi-bar-val.manual { color: var(--muted); }
-    .roi-bar-val.rankeia { color: var(--roxo); }
-    .roi-bar-label { font-size: 11px; color: var(--muted); }
-    .roi-legend { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
-    .roi-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-    .roi-legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .waitlist-section {
+      padding: 100px 0;
+      background: linear-gradient(180deg, #0D0818 0%, #1a0533 100%);
+      border-top: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .waitlist-section::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(123,63,242,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .waitlist-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .wl-urgency {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.24);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--font-t);
+      font-size: 13px;
+      font-weight: 700;
+      color: #f87171;
+      margin-bottom: 20px;
+    }
+    .wl-title {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: clamp(26px, 3.5vw, 42px);
+      letter-spacing: -1.5px;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .wl-sub { font-size: 16px; color: rgba(255,255,255,0.58); line-height: 1.7; margin-bottom: 36px; }
+    .wl-form { display: flex; flex-direction: column; gap: 12px; }
+    .wl-field input,
+    .wl-field select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: var(--font-b);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .wl-field input::placeholder { color: rgba(255,255,255,0.28); }
+    .wl-field input:focus,
+    .wl-field select:focus { border-color: var(--roxo); }
+    .wl-field select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A90A2' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+    .wl-field select option { background: #1a0533; color: var(--text); }
+    .wl-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #7B3FF2, #5200CC);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-t);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .wl-submit:hover { opacity: 0.88; transform: translateY(-2px); }
+    .wl-privacy { text-align: center; font-size: 12px; color: rgba(255,255,255,0.32); margin-top: 8px; }
+    .wl-visual { display: flex; justify-content: center; align-items: center; }
+
+    #waitlist-success {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    #waitlist-success h3 {
+      font-family: var(--font-t);
+      font-weight: 900;
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    #waitlist-success p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #waitlist-success .ws-ig-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--roxo);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    #waitlist-success .ws-ig-link:hover { text-decoration: underline; }
 
     /* ============================================================
-       DEPOIMENTOS
+       FOOTER
     ============================================================ */
-    .testimonials { padding: 100px 0; background: var(--bg); }
-    .testimonials-header { text-align: center; margin-bottom: 56px; }
-    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .testi-card { background: var(--card2); border: 1px solid var(--border); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 16px; transition: border-color 0.25s; }
-    .testi-card:hover { border-color: var(--roxo-border); }
-    .testi-quote { font-family: Georgia, serif; font-size: 72px; line-height: 0.6; color: var(--roxo); margin-bottom: 6px; }
-    .testi-text { font-size: 15px; color: var(--muted); line-height: 1.75; flex: 1; }
-    .testi-stars { display: flex; gap: 3px; color: #FFB800; font-size: 14px; }
-    .testi-author { display: flex; align-items: center; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border); }
-    .testi-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-t); font-weight: 900; font-size: 16px; color: #fff; flex-shrink: 0; }
-    .testi-name { font-family: var(--font-t); font-weight: 700; font-size: 14px; color: var(--text); }
-    .testi-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-    /* ============================================================
-       PREÇOS — Planos Feitos para Escalar
-    ============================================================ */
-    .pricing { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
-    .pricing-header { text-align: center; margin-bottom: 56px; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }
-    .price-card { background: var(--card2); border: 1px solid var(--border); border-radius: 18px; padding: 36px 32px; position: relative; transition: transform 0.25s; }
-    .price-card:hover { transform: translateY(-4px); }
-    .price-card.popular { border-color: var(--roxo); border-width: 2px; }
-    .popular-tag { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--grad); color: #fff; font-family: var(--font-t); font-weight: 800; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 16px; border-radius: 100px; white-space: nowrap; }
-    .price-name { font-family: var(--font-t); font-weight: 800; font-size: 16px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .price-val { font-family: var(--font-t); font-weight: 900; font-size: 48px; letter-spacing: -2px; color: var(--text); line-height: 1; margin-bottom: 4px; }
-    .price-val sup { font-size: 20px; vertical-align: top; margin-top: 10px; display: inline-block; }
-    .price-val sub { font-size: 14px; font-weight: 500; color: var(--muted); font-family: var(--font-b); }
-    .price-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-    .price-list { display: flex; flex-direction: column; gap: 11px; margin-bottom: 20px; }
-    .price-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--muted); }
-    .price-check { color: var(--roxo); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-    .price-ideal { background: rgba(123,63,242,0.08); border: 1px solid rgba(123,63,242,0.2); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.55; }
-    .price-ideal strong { color: var(--roxo); display: block; margin-bottom: 3px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .price-btn { width: 100%; justify-content: center; }
-    .pricing-note { text-align: center; margin-top: 36px; font-size: 14px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .pricing-note span { color: var(--roxo); font-weight: 600; }
-
-    /* ============================================================
-       CTA FINAL — Pare de digitar. Comece a escalar.
-    ============================================================ */
-    .cta-final { padding: 120px 0; text-align: center; background: radial-gradient(ellipse at center top, rgba(123,63,242,0.35) 0%, rgba(82,0,204,0.1) 40%, transparent 70%), var(--bg); }
-    .cta-final-h2 { font-family: var(--font-t); font-weight: 900; font-size: clamp(40px, 6vw, 72px); letter-spacing: -3px; line-height: 1.02; color: var(--text); margin-bottom: 20px; }
-    .cta-final-sub { font-size: 17px; color: var(--muted); max-width: 500px; margin: 0 auto 12px; line-height: 1.65; }
-    .cta-final-sub2 { font-size: 15px; color: var(--muted); margin-bottom: 44px; }
-    .cta-final-btn { font-size: 17px; padding: 20px 48px; border-radius: 14px; margin-bottom: 24px; display: inline-flex; }
-    .cta-guarantee { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
-    .cta-guarantee svg { color: var(--roxo); }
-    .cta-recover { font-size: 13px; color: rgba(138,144,162,0.5); }
-
-    /* ============================================================
-       FOOTER CTA BAR
-    ============================================================ */
-    .cta-bar { background: var(--surface); border-top: 1px solid var(--border); padding: 60px 0; }
-    .cta-bar-inner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; align-items: center; }
-    .cta-bar-title { font-family: var(--font-t); font-weight: 900; font-size: clamp(22px, 2.5vw, 30px); letter-spacing: -1px; line-height: 1.15; color: var(--text); }
-    .cta-bar-title .purple { color: var(--roxo); }
-    .cta-bar-mid { text-align: center; }
-    .cta-bar-sub { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
-    .cta-bar-right { display: flex; flex-direction: column; gap: 12px; }
-    .cta-contact-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
-    .cta-contact-item svg { color: var(--roxo); flex-shrink: 0; }
-    .cta-whatsapp { display: flex; align-items: center; gap: 10px; background: #25D366; color: #fff; font-family: var(--font-t); font-weight: 800; font-size: 14px; padding: 12px 20px; border-radius: 50px; margin-top: 8px; transition: opacity 0.2s, transform 0.2s; width: fit-content; }
-    .cta-whatsapp:hover { opacity: 0.9; transform: translateY(-1px); }
-
-    /* ============================================================
-       FOOTER FINAL
-    ============================================================ */
-    .footer { background: #060609; border-top: 1px solid var(--border); padding: 40px 0; }
-    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
-    .footer-links { display: flex; flex-wrap: wrap; gap: 2px; }
-    .footer-links a { font-size: 13px; color: var(--muted); padding: 4px 12px; border-radius: 6px; transition: color 0.2s; }
+    .footer { background: #060609; border-top: 1px solid rgba(255,255,255,0.06); padding: 56px 0 0; }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 40px; }
+    .footer-brand-desc { font-size: 14px; color: var(--muted); line-height: 1.65; max-width: 300px; margin: 12px 0 10px; }
+    .footer-bro { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+    .footer-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer-ig:hover { color: var(--roxo); }
+    .footer-col-title {
+      font-family: var(--font-t);
+      font-weight: 800;
+      font-size: 12px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 14px; color: var(--muted); transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .footer-links a:hover { color: var(--text); }
-    .footer-copy { font-size: 12px; color: rgba(138,144,162,0.5); }
+    .footer-links a.hl { color: var(--roxo); font-weight: 600; }
+    .footer-links a.hl:hover { color: #9b6ef5; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 28px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.28);
+    }
 
     /* ============================================================
        RESPONSIVO
     ============================================================ */
-    /* ============================================================
-       BARRA DE URGÊNCIA
-    ============================================================ */
-    #urgency-bar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 101;
-      height: 40px;
-      background: var(--grad);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-family: var(--font-t);
-      font-weight: 700;
-      font-size: 13px;
-      color: #fff;
-      padding: 0 16px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-    #urgency-bar .ub-label { opacity: 0.92; }
-    #urgency-bar .ub-countdown {
-      font-family: var(--font-b);
-      font-weight: 600;
-      background: rgba(0,0,0,0.28);
-      border-radius: 4px;
-      padding: 2px 9px;
-      font-size: 13px;
-      letter-spacing: 1.5px;
-      flex-shrink: 0;
-    }
-
-    /* ============================================================
-       SEÇÃO LISTA DE ESPERA
-    ============================================================ */
-    .waitlist-section { padding: 100px 0; background: var(--bg); border-top: 1px solid var(--border); }
-    .waitlist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-    .waitlist-form-box { background: var(--card2); border: 1px solid var(--border-md); border-radius: 20px; padding: 36px; }
-    .waitlist-form-box .wf-title { font-family: var(--font-t); font-weight: 900; font-size: 22px; color: var(--text); letter-spacing: -0.5px; margin-bottom: 6px; }
-    .waitlist-form-box .wf-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-    .wf-field { margin-bottom: 14px; }
-    .wf-field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-    .wf-field input { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border-md); border-radius: 10px; padding: 13px 16px; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s; font-family: var(--font-b); }
-    .wf-field input:focus { border-color: var(--roxo); }
-    .wf-submit { width: 100%; justify-content: center; font-size: 16px; padding: 16px; margin-top: 10px; }
-    .waitlist-success { display: none; text-align: center; padding: 20px 0; }
-    .waitlist-success .ws-emoji { font-size: 44px; margin-bottom: 14px; }
-    .waitlist-success .ws-title { font-family: var(--font-t); font-weight: 900; font-size: 22px; color: var(--text); margin-bottom: 8px; }
-    .waitlist-success .ws-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
-    .waitlist-privacy { text-align: center; font-size: 12px; color: var(--muted); margin-top: 12px; }
-
-    .founder-prices { background: linear-gradient(135deg,#1a0a3a 0%,#2d0a6b 100%); border: 2px solid var(--roxo); border-radius: 16px; padding: 28px; }
-    .founder-prices-label { font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
-    .founder-price-row { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .founder-price-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-    .fpr-name { font-family: var(--font-t); font-weight: 800; font-size: 15px; color: #fff; margin-bottom: 2px; }
-    .fpr-sub { font-size: 12px; color: rgba(255,255,255,0.45); }
-    .fpr-price-old { font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin-bottom: 2px; }
-    .fpr-price-new { font-family: var(--font-t); font-weight: 900; font-size: 22px; color: #B99EFF; letter-spacing: -1px; }
-    .fpr-price-new sub { font-size: 13px; font-weight: 500; }
-
-    .founder-benefits { background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-top: 20px; }
-    .founder-benefits-title { font-family: var(--font-t); font-weight: 800; font-size: 15px; color: var(--text); margin-bottom: 14px; }
-    .fb-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); margin-bottom: 10px; }
-    .fb-item:last-child { margin-bottom: 0; }
-    .fb-check { color: var(--roxo); font-size: 16px; flex-shrink: 0; }
-    .waitlist-deadline { text-align: center; font-size: 13px; color: var(--muted); padding: 14px 20px; background: rgba(123,63,242,0.06); border: 1px solid var(--roxo-border); border-radius: 10px; margin-top: 20px; line-height: 1.5; }
-
-    /* Preço riscado nos cards de pricing */
-    .price-old { font-size: 14px; color: var(--muted); text-decoration: line-through; margin-bottom: 4px; font-family: var(--font-b); }
-    .price-founder-badge { display: inline-block; background: var(--roxo); color: #fff; font-family: var(--font-t); font-weight: 800; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-bottom: 8px; }
-
     @media (max-width: 960px) {
-      .nav-links, .nav-social { display: none; }
+      .nav-links, .nav-ig.nav-ig-desktop { display: none; }
       .hamburger { display: flex; }
       .hero-inner { grid-template-columns: 1fr; gap: 48px; padding: 60px 0; text-align: center; }
-      .hero-tags { justify-content: center; }
+      .hero-chips { justify-content: center; }
       .hero-btns { justify-content: center; }
-      .hero-desc { margin: 0 auto 36px; }
+      .hero-sub { margin: 0 auto 28px; }
       .hero-visual { justify-content: center; }
-      .browser-mock { max-width: 440px; }
-      .phone-mock { right: -12px; bottom: -20px; }
-      .problem-grid { grid-template-columns: 1fr; }
-      .motor-flow { grid-template-columns: 1fr; }
-      .motor-arrow { transform: rotate(90deg); padding: 8px 0; }
-      .services-grid { grid-template-columns: 1fr; }
-      .features-strip-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
-      .strip-item { border-right: none; padding: 0; }
-      .arsenal-layout { grid-template-columns: 1fr; }
-      .multiplatform-layout { grid-template-columns: 1fr; }
-      .mp-connector { display: none; }
-      .mp-input { margin-bottom: 16px; }
-      .roi-grid { grid-template-columns: 1fr; }
-      .testi-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      .waitlist-grid { grid-template-columns: 1fr; }
-      .cta-bar-inner { grid-template-columns: 1fr; text-align: center; gap: 32px; }
-      .cta-bar-right { align-items: center; }
-      .cta-whatsapp { margin: 0 auto; }
-      .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+      .hero-proof { justify-content: center; }
+      .oqe-grid { grid-template-columns: 1fr; }
+      .cf-grid { grid-template-columns: 1fr; }
+      .ben-grid { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .planos-grid { grid-template-columns: 1fr; max-width: 480px; }
+      .waitlist-inner { grid-template-columns: 1fr; }
+      .wl-visual { display: none; }
+      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+      .rank-placeholder { max-width: 260px; }
     }
     @media (max-width: 580px) {
-      .hero-h1 { font-size: 32px; }
-      .phone-mock { display: none; }
-      .features-strip-grid { grid-template-columns: 1fr; gap: 28px; }
-      .cta-final-h2 { font-size: 36px; letter-spacing: -1.5px; }
+      .hero-h1 { font-size: 34px; letter-spacing: -1.5px; }
+      #urgency-bar { font-size: 11px; gap: 8px; }
+      #urgency-bar .ub-btn { display: none; }
     }
   </style>
 </head>
@@ -498,8 +682,8 @@
      BARRA DE URGÊNCIA
 ============================================================ -->
 <div id="urgency-bar">
-  <span class="ub-label">🚀 Acesso Fundador — vagas limitadas! Lançamento em:</span>
-  <span class="ub-countdown" id="ub-timer">00d 00h 00m 00s</span>
+  <span class="ub-text">🚀 Lançamento 5 de junho · Acesso Fundador com 60% de desconto · Vagas limitadas</span>
+  <a href="#lista-espera" class="ub-btn">Garantir agora →</a>
 </div>
 
 <!-- ============================================================
@@ -518,31 +702,46 @@
         <span class="logo-mark">rankeia</span>
       </a>
       <ul class="nav-links">
-        <li><a href="#motor">Como funciona</a></li>
-        <li><a href="#arsenal">Funcionalidades</a></li>
-        <li><a href="#precos">Preços</a></li>
-        <li><a href="#depoimentos">Depoimentos</a></li>
-        <li><a href="#lista-espera" style="color:var(--roxo);font-weight:700;">Lista de Espera</a></li>
+        <li><a href="#">Início</a></li>
+        <li><a href="#o-que-e">O que é</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#planos">Planos</a></li>
+        <li><a href="#lista-espera" class="highlight">Lançamento</a></li>
       </ul>
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="nav-social">
-          <a href="#" class="social-icon" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
-          <a href="#" class="social-icon" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-          <a href="#" class="social-icon" aria-label="LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
-        </div>
+      <div class="nav-right">
+        <!-- Instagram Rankeia -->
+        <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener"
+           class="nav-ig nav-ig-desktop" aria-label="Instagram Rankeia">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
         <a href="#lista-espera" class="btn btn-primary" id="nav-cta-desktop" style="display:none;">Garantir desconto →</a>
-        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </div>
 </nav>
 
+<!-- MENU MOBILE -->
 <div class="mobile-menu" id="mobile-menu">
-  <a href="#motor">Como funciona</a>
-  <a href="#arsenal">Funcionalidades</a>
-  <a href="#precos">Preços</a>
-  <a href="#depoimentos">Depoimentos</a>
-  <a href="#lista-espera" style="color:var(--roxo);font-weight:700;">Lista de Espera</a>
+  <a href="#">Início</a>
+  <a href="#o-que-e">O que é</a>
+  <a href="#como-funciona">Como funciona</a>
+  <a href="#planos">Planos</a>
+  <a href="#lista-espera" class="highlight">Lançamento</a>
+  <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="mm-ig">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+    @rankeiaapp
+  </a>
   <a href="#lista-espera" class="btn btn-primary">Garantir desconto →</a>
 </div>
 
@@ -551,714 +750,361 @@
 <!-- ============================================================
      HERO
 ============================================================ -->
-<section class="hero">
+<section class="hero" id="inicio">
   <div class="container">
     <div class="hero-inner">
+
+      <!-- Coluna esquerda — copy -->
       <div class="fade-in">
-        <span class="hero-overline">Lançamento · 20 de Maio de 2026</span>
-        <h1 class="hero-h1">Seu anúncio<br><span class="purple">aparece.</span></h1>
-        <h1 class="hero-h1" style="color:var(--muted);font-size:clamp(26px,3.4vw,42px);margin-top:4px;">Seus concorrentes, não.</h1>
-        <p class="hero-tagline">O Rankeia faz em <strong>30 segundos</strong> o que você<br>levava <strong>2 horas</strong> para fazer. E faz melhor.</p>
-        <div class="hero-tags">
-          <span class="hero-tag">Mercado Livre</span><span class="hero-sep"></span>
-          <span class="hero-tag">Shopee</span><span class="hero-sep"></span>
-          <span class="hero-tag">Amazon</span><span class="hero-sep"></span>
-          <span class="hero-tag">TikTok Shop</span>
+        <div class="hero-badge">✦ Lançamento oficial · 5 de junho de 2026</div>
+        <h1 class="hero-h1">Seu anúncio no <span class="accent">topo.</span><br>Seus produtos, mais vendidos.</h1>
+        <p class="hero-sub">O Rankeia usa inteligência artificial para gerar título, descrição e tags otimizados para cada marketplace — em 30 segundos. Sem esforço. Sem achismo.</p>
+        <div class="hero-chips">
+          <span class="hero-chip">Mercado Livre</span>
+          <span class="hero-chip">Shopee</span>
+          <span class="hero-chip">Amazon</span>
+          <span class="hero-chip">TikTok Shop</span>
+          <span class="hero-chip">Magalu</span>
+          <span class="hero-chip">Americanas</span>
         </div>
-        <p class="hero-desc">Cole o nome do produto e a Rankeia gera título SEO, descrição persuasiva e tags estratégicas para todos os marketplaces no padrão exato de cada plataforma.</p>
         <div class="hero-btns">
-          <a href="#lista-espera" class="btn btn-primary">Garantir desconto Fundador →</a>
-          <a href="#motor" class="btn btn-outline">Ver como funciona</a>
+          <a href="#lista-espera" class="btn btn-primary" style="font-size:16px;padding:16px 36px;">Garantir acesso Fundador →</a>
+        </div>
+        <div class="hero-proof">⭐ +200 vendedores já na lista de espera</div>
+      </div>
+
+      <!-- Coluna direita — Mascote Rank (pose: acenando) -->
+      <div class="hero-visual fade-in" style="transition-delay:0.15s;">
+        <!--
+          MASCOTE RANK — Hero (pose: acenando)
+          Quando o arquivo estiver disponível, substituir este bloco inteiro por:
+          <img src="mascote-rank-acenando.png"
+               alt="Rank — mascote da Rankeia acenando"
+               class="rank-float"
+               style="max-width:380px;width:100%;display:block;" />
+        -->
+        <div class="rank-placeholder rank-float" data-pose="acenando">
+          <span class="rp-emoji">🤖</span>
+          <span class="rp-label">Rank — pose: acenando</span>
+          <span class="rp-hint">substituir por mascote-rank-acenando.png</span>
         </div>
       </div>
-      <div class="hero-visual fade-in" style="transition-delay:0.18s;">
-        <div class="browser-mock">
-          <div class="browser-bar">
-            <div class="browser-dots">
-              <div class="browser-dot" style="background:#FF5F56;"></div>
-              <div class="browser-dot" style="background:#FFBD2E;"></div>
-              <div class="browser-dot" style="background:#27C93F;"></div>
-            </div>
-            <div class="browser-url">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              app.rankeia.com.br
-            </div>
-          </div>
-          <div class="browser-body">
-            <div class="mock-label">nome do produto</div>
-            <div class="mock-input">
-              <span style="opacity:.8;">Tênis Masculino Couro 38–44</span>
-              <div class="mock-input-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
-            </div>
-            <div class="mock-progress-wrap">
-              <div class="mock-progress-top"><span>Motor Rankeia processando...</span><span class="mock-progress-pct">100%</span></div>
-              <div class="mock-progress-bg"><div class="mock-progress-fill"></div></div>
-            </div>
-            <div class="mock-label">título seo + descrição + tags</div>
-            <div class="mock-result">
-              <div class="mock-result-title">Tênis Masculino Couro Legítimo Premium Casual Social Bico Fino Numeração Grande 38 ao 44 — Entrega Rápida</div>
-              <div class="mock-result-tags">
-                <span class="mock-tag">tênis masculino</span><span class="mock-tag">couro legítimo</span><span class="mock-tag">calçado casual</span><span class="mock-tag">número grande</span><span class="mock-tag">+11 tags</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="phone-mock">
-          <div class="phone-top"><div class="phone-notch"></div></div>
-          <div class="phone-body">
-            <div class="phone-stat"><div class="phone-stat-label">Visualizações</div><div class="phone-stat-value">+340%</div><div class="phone-stat-sub">após otimização</div></div>
-            <div class="phone-stat"><div class="phone-stat-label">Tempo gerado</div><div class="phone-stat-value">28s</div><div class="phone-stat-sub">por anúncio</div></div>
-            <div class="phone-badge">⚡ Anúncio pronto</div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     SEÇÃO PROBLEMA — O que você quer vs O que você realmente faz
+     O QUE É O RANKEIA  (id="o-que-e")
 ============================================================ -->
-<section class="problem">
+<section class="o-que-e" id="o-que-e">
   <div class="container">
-    <div style="text-align:center;margin-bottom:48px;" class="fade-in">
-      <span class="overline">O problema</span>
-      <h2 class="section-h2">Existe um <span class="accent">gap</span> entre o que você quer<br>e o que você realmente faz</h2>
+    <div class="section-header fade-in">
+      <span class="overline">O que é</span>
+      <h2 class="section-h2">O que é o <span class="accent">Rankeia?</span></h2>
       <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
     </div>
-    <div class="problem-grid">
-      <div class="problem-card want fade-in" style="transition-delay:0.05s;">
-        <div class="problem-card-icon">
-          <div class="bar-chart">
-            <div class="bar" style="height:24px;width:18px;"></div>
-            <div class="bar" style="height:36px;width:18px;"></div>
-            <div class="bar" style="height:52px;width:18px;"></div>
-            <div class="bar" style="height:70px;width:18px;background:linear-gradient(180deg,#7B3FF2,#5200CC);"></div>
-          </div>
-        </div>
-        <div class="problem-card-title">O que você quer fazer</div>
-        <div class="problem-card-desc">Vender e escalar sua operação. Cadastrar mais produtos, atingir mais clientes e crescer sem depender de habilidades de copywriting.</div>
-      </div>
-      <div class="problem-card reality fade-in" style="transition-delay:0.12s;">
-        <div class="problem-card-icon">
-          <div class="boxes-visual">
-            <div class="box-item"></div><div class="box-item"></div><div class="box-item"></div><div class="box-item"></div>
-            <div class="box-item"></div><div class="box-item"></div><div class="box-item"></div><div class="box-item"></div>
-            <div class="box-item"></div><div class="box-item"></div><div class="box-item"></div><div class="box-item"></div>
-          </div>
-        </div>
-        <div class="problem-card-title">O que você realmente faz</div>
-        <div class="problem-card-desc">Gastar de 30 minutos a 2 horas por produto escrevendo títulos, descrições e tags manualmente — um por um, em cada plataforma.</div>
-      </div>
+    <p class="oqe-intro fade-in">O Rankeia é um SaaS de otimização de anúncios com inteligência artificial para vendedores de marketplace. Cole o nome do produto, escolha a plataforma — e em 30 segundos você tem um anúncio profissional, otimizado para o algoritmo do marketplace.</p>
+    <div class="oqe-highlight fade-in">
+      "Sem saber escrever copy. Sem passar horas pesquisando palavras-chave. Sem depender de ninguém."
     </div>
-    <div class="problem-alert fade-in" style="transition-delay:0.2s;">
-      O resultado manual? <strong>Títulos genéricos, descrições sem persuasão</strong> e total falta de padrão entre os marketplaces. Seus produtos ficam invisíveis enquanto os concorrentes vendem.
+    <div class="oqe-grid">
+      <div class="oqe-card fade-in" style="transition-delay:0.06s;">
+        <span class="oqe-emoji">📦</span>
+        <div class="oqe-title">Vendedor solo</div>
+        <p class="oqe-desc">Tem 10 a 200 produtos e opera sem equipe de marketing.</p>
+      </div>
+      <div class="oqe-card fade-in" style="transition-delay:0.14s;">
+        <span class="oqe-emoji">🏪</span>
+        <div class="oqe-title">Pequena operação</div>
+        <p class="oqe-desc">Vende em mais de um marketplace e perde tempo adaptando o mesmo anúncio para cada plataforma.</p>
+      </div>
+      <div class="oqe-card fade-in" style="transition-delay:0.22s;">
+        <span class="oqe-emoji">🚀</span>
+        <div class="oqe-title">Quem quer crescer</div>
+        <p class="oqe-desc">Sabe que anúncio ruim custa venda, mas não tem tempo nem verba para contratar especialista.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     MINI CTA — Urgência pós-problema
+     COMO FUNCIONA  (id="como-funciona" — NÃO ALTERAR O ID)
 ============================================================ -->
-<section style="background:var(--bg);padding:56px 0;border-top:1px solid var(--border);">
-  <div class="container" style="text-align:center;">
-    <p class="fade-in" style="font-family:var(--font-t);font-weight:900;font-size:clamp(20px,2.2vw,28px);color:var(--text);letter-spacing:-0.8px;margin-bottom:18px;">Chega de perder horas. <span style="color:var(--roxo);">O Rankeia faz por você.</span></p>
-    <a href="#lista-espera" class="btn btn-primary fade-in" style="font-size:16px;padding:15px 38px;transition-delay:0.1s;">Garantir meu acesso Fundador →</a>
-  </div>
-</section>
-
-<!-- ============================================================
-     MOTOR RANKEIA — Fluxo de processamento
-============================================================ -->
-<section class="motor" id="motor">
+<section class="como-funciona" id="como-funciona">
   <div class="container">
-    <div class="motor-header fade-in">
-      <span class="overline">A solução</span>
-      <h2 class="section-h2">Conheça o <span class="accent">Motor Rankeia</span></h2>
+    <div class="section-header fade-in">
+      <span class="overline">Passo a passo</span>
+      <h2 class="section-h2">Como <span class="accent">funciona</span></h2>
       <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-      <p class="lead">Em menos de 30 segundos, nossa tecnologia transforma o nome de um produto em um anúncio de <strong>alta conversão</strong> no <strong>padrão exato de cada plataforma.</strong></p>
+      <p class="section-lead">Três passos. Trinta segundos. Anúncio no topo.</p>
     </div>
-    <div class="motor-flow fade-in" style="transition-delay:0.1s;">
-      <div class="motor-step input">
-        <div class="motor-step-label">Entrada</div>
-        <div class="motor-step-title">Nome do Produto</div>
-        <div class="motor-step-desc">Você fornece apenas o nome e a categoria. Sem formulários complexos, sem configuração.</div>
-        <div class="motor-input-field">Digite o nome do produto aqui...</div>
+    <div class="cf-grid">
+      <div class="cf-card fade-in" style="transition-delay:0.06s;">
+        <div class="cf-num">01</div>
+        <div class="cf-title">Cole o produto</div>
+        <p class="cf-desc">Nome, categoria e para qual plataforma quer otimizar. Só isso. Sem cadastro complicado, sem configuração.</p>
       </div>
-      <div class="motor-arrow">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <div class="cf-card fade-in" style="transition-delay:0.14s;">
+        <div class="cf-num">02</div>
+        <div class="cf-title">A IA faz o trabalho</div>
+        <p class="cf-desc">O Rankeia gera título otimizado para SEO, descrição persuasiva e tags estratégicas — no padrão exato exigido por cada marketplace.</p>
       </div>
-      <div class="motor-step engine">
-        <div class="motor-step-label">Processamento</div>
-        <div class="motor-step-title">Motor Rankeia</div>
-        <div class="motor-engine-gears">
-          <div class="gear"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M16.24 7.76l-1.41 1.41M12 2v2M12 20v2M4.93 4.93l1.41 1.41M7.76 7.76l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M7.76 16.24l1.41-1.41"/></svg></div>
-          <div class="gear"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-          <div class="gear"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-        </div>
-        <div class="motor-step-desc">IA treinada com dados reais dos marketplaces analisa palavras-chave, algoritmos e padrões de busca de cada plataforma.</div>
-        <div class="motor-badge">⚡ 30 segundos</div>
-      </div>
-      <div class="motor-arrow">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </div>
-      <div class="motor-step output">
-        <div class="motor-step-label">Resultado</div>
-        <div class="motor-step-title">Anúncio Completo</div>
-        <div class="motor-step-desc">Pronto para copiar e publicar em cada plataforma.</div>
-        <div class="motor-output-list">
-          <div class="motor-output-item"><div class="motor-output-dot"></div>Título SEO otimizado</div>
-          <div class="motor-output-item"><div class="motor-output-dot"></div>Descrição persuasiva</div>
-          <div class="motor-output-item"><div class="motor-output-dot"></div>Tags estratégicas</div>
-          <div class="motor-output-item"><div class="motor-output-dot"></div>Padrão nativo por plataforma</div>
-        </div>
+      <div class="cf-card fade-in" style="transition-delay:0.22s;">
+        <div class="cf-num">03</div>
+        <div class="cf-title">Publica e vende mais</div>
+        <p class="cf-desc">Copie, cole e publique. Seu anúncio entra no algoritmo do marketplace com tudo certo para aparecer nas primeiras posições.</p>
       </div>
     </div>
+    <p class="cf-plataformas fade-in">
+      ✓ Mercado Livre &nbsp;&nbsp; ✓ Shopee &nbsp;&nbsp; ✓ Amazon &nbsp;&nbsp; ✓ TikTok Shop &nbsp;&nbsp; ✓ Magalu &nbsp;&nbsp; ✓ Americanas
+    </p>
   </div>
 </section>
 
 <!-- ============================================================
-     BLUEPRINT DO VENDEDOR — 3 cards com checklists
+     MAIORES BENEFÍCIOS
 ============================================================ -->
-<section class="services" id="funcionalidades">
+<section class="beneficios" id="beneficios">
   <div class="container">
-    <div class="services-header fade-in">
-      <span class="overline">Blueprint do vendedor</span>
-      <h2 class="section-h2">Tudo que seu anúncio <span class="accent">precisa</span></h2>
+    <div class="section-header fade-in">
+      <span class="overline">Por que escolher</span>
+      <h2 class="section-h2">Por que vendedores <span class="accent">escolhem o Rankeia</span></h2>
       <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
     </div>
-    <div class="services-grid">
-      <div class="service-card fade-in" style="transition-delay:0.05s;">
-        <div class="svc-icon-wrap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h10"/></svg></div>
+    <div class="ben-grid">
+      <div class="ben-card fade-in" style="transition-delay:0.05s;">
+        <span class="ben-emoji">⚡</span>
         <div>
-          <div class="svc-title">Título Otimizado para SEO</div>
-          <div class="svc-desc" style="margin-top:8px;">Palavras-chave exatas priorizadas pelo algoritmo, geradas no limite de caracteres aceito por cada plataforma.</div>
+          <div class="ben-title">30 segundos por anúncio</div>
+          <p class="ben-desc">O que levava horas agora leva menos de um minuto. Tempo é dinheiro — especialmente quando você opera sozinho.</p>
         </div>
-        <ul class="svc-list">
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Palavras-chave priorizadas pelo algoritmo</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Limite de caracteres respeitado por plataforma</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Formato nativo de cada marketplace</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Atualizado com tendências de busca</li>
-        </ul>
-        <div class="svc-mockup"><div class="svc-mk-row"><span class="svc-mk-label">Posição média no ranking</span><span class="svc-mk-val">#3</span></div><div class="svc-mk-bar-bg"><div class="svc-mk-bar-fill" style="width:85%;"></div></div></div>
       </div>
-      <div class="service-card fade-in" style="transition-delay:0.12s;">
-        <div class="svc-icon-wrap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+      <div class="ben-card fade-in" style="transition-delay:0.1s;">
+        <span class="ben-emoji">🎯</span>
         <div>
-          <div class="svc-title">Descrição Persuasiva</div>
-          <div class="svc-desc" style="margin-top:8px;">Estrutura completa com benefícios, especificações técnicas, diferenciais e Call-to-Action no tom de voz ideal.</div>
+          <div class="ben-title">Otimizado para o algoritmo</div>
+          <p class="ben-desc">Cada marketplace tem regras diferentes para título, descrição e tags. O Rankeia conhece todas e aplica automaticamente.</p>
         </div>
-        <ul class="svc-list">
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Benefícios e especificações técnicas</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Diferenciais competitivos destacados</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Call-to-Action incluída</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Tom de voz adaptado por canal</li>
-        </ul>
-        <div class="svc-mockup"><div class="svc-mk-row"><span class="svc-mk-label">Taxa de conversão média</span><span class="svc-mk-val">+68%</span></div><div class="svc-mk-bar-bg"><div class="svc-mk-bar-fill" style="width:68%;"></div></div></div>
       </div>
-      <div class="service-card fade-in" style="transition-delay:0.2s;">
-        <div class="svc-icon-wrap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+      <div class="ben-card fade-in" style="transition-delay:0.15s;">
+        <span class="ben-emoji">🔄</span>
         <div>
-          <div class="svc-title">Tags e Palavras-Chave</div>
-          <div class="svc-desc" style="margin-top:8px;">Extração automática dos termos de busca mais relevantes para dominar as primeiras posições orgânicas.</div>
+          <div class="ben-title">Multi-plataforma de verdade</div>
+          <p class="ben-desc">Mesmo produto, 4 marketplaces diferentes. O Rankeia adapta o anúncio para o padrão de cada um sem você precisar reescrever.</p>
         </div>
-        <ul class="svc-list">
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Termos de busca de maior volume</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Tags adaptadas por plataforma</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Cauda longa para nichos específicos</li>
-          <li class="svc-item"><div class="svc-check"><svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div>Domínio das primeiras posições orgânicas</li>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.2s;">
+        <span class="ben-emoji">📈</span>
+        <div>
+          <div class="ben-title">Mais visibilidade, mais vendas</div>
+          <p class="ben-desc">Anúncios bem escritos aparecem nas primeiras posições. Anúncios nas primeiras posições vendem mais. É matemática.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.25s;">
+        <span class="ben-emoji">🧠</span>
+        <div>
+          <div class="ben-title">Sem precisar saber de copy</div>
+          <p class="ben-desc">Você é especialista no seu produto. O Rankeia é especialista em fazer seu produto aparecer. Cada um no que é bom.</p>
+        </div>
+      </div>
+      <div class="ben-card fade-in" style="transition-delay:0.3s;">
+        <span class="ben-emoji">💰</span>
+        <div>
+          <div class="ben-title">ROI imediato</div>
+          <p class="ben-desc">Uma venda a mais por mês já paga o plano inteiro. Na prática, vendedores relatam melhora visível na primeira semana.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     O QUE VEM POR AÍ — ROADMAP
+============================================================ -->
+<section class="roadmap" id="roadmap">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="roadmap-general-badge">Roadmap Rankeia 2026</div>
+      <h2 class="section-h2">Só estamos <span class="accent">começando</span></h2>
+      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
+      <p class="section-lead">O lançamento de 5 de junho é o MVP. O roadmap vai muito além.</p>
+    </div>
+    <div class="roadmap-grid">
+      <!-- FASE 1 -->
+      <div class="rm-card fade-in" style="transition-delay:0.06s;">
+        <span class="rm-phase-badge launch">✅ Lançamento · Jun 2026</span>
+        <div class="rm-title">Gerador de anúncios</div>
+        <ul class="rm-list">
+          <li class="rm-item"><span class="rm-check">✓</span>Título otimizado por plataforma</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Descrição persuasiva</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Tags e palavras-chave estratégicas</li>
+          <li class="rm-item"><span class="rm-check">✓</span>6 marketplaces suportados</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Histórico de anúncios gerados</li>
         </ul>
-        <div class="svc-mockup"><div class="svc-mk-row"><span class="svc-mk-label">Alcance orgânico</span><span class="svc-mk-val">+340%</span></div><div class="svc-mk-bar-bg"><div class="svc-mk-bar-fill" style="width:92%;"></div></div></div>
+      </div>
+      <!-- FASE 2 -->
+      <div class="rm-card fade-in" style="transition-delay:0.14s;">
+        <span class="rm-phase-badge soon">🔜 Em breve</span>
+        <div class="rm-title">Geração de imagens</div>
+        <ul class="rm-list">
+          <li class="rm-item"><span class="rm-check">✓</span>Foto do produto → IA gera imagem profissional</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Fundo branco limpo para marketplace</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Versão lifestyle do produto</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Variações de cor automáticas</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Resolução otimizada por plataforma</li>
+        </ul>
+      </div>
+      <!-- FASE 3 -->
+      <div class="rm-card fade-in" style="transition-delay:0.22s;">
+        <span class="rm-phase-badge horizon">🔭 No horizonte</span>
+        <div class="rm-title">Vídeo e carrossel</div>
+        <ul class="rm-list">
+          <li class="rm-item"><span class="rm-check">✓</span>Vídeo curto de produto para TikTok Shop</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Carrossel de imagens automático</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Template de stories para divulgação</li>
+          <li class="rm-item"><span class="rm-check">✓</span>Integração direta com marketplace (em estudo)</li>
+        </ul>
       </div>
     </div>
+    <p class="roadmap-note fade-in">Fundadores terão acesso antecipado a cada nova fase — sem custo adicional.</p>
   </div>
 </section>
 
 <!-- ============================================================
-     CARD CTA — Oferta Fundador pós-Blueprint
+     PLANOS  (id="planos" — NÃO ALTERAR O ID)
 ============================================================ -->
-<section style="background:var(--surface);padding:56px 0;border-top:1px solid var(--border);">
+<section class="planos" id="planos">
   <div class="container">
-    <div class="fade-in" style="background:linear-gradient(135deg,#1a0a3a 0%,#2d0a6b 100%);border:2px solid var(--roxo);border-radius:20px;padding:44px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:28px;">
-      <div>
-        <p style="font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:10px;">Oferta Fundador</p>
-        <p style="font-family:var(--font-t);font-weight:900;font-size:clamp(20px,2.5vw,28px);color:#fff;letter-spacing:-1px;line-height:1.2;margin-bottom:8px;">Tudo isso por menos de <span style="color:#B99EFF;">R$1,20/dia</span></p>
-        <p style="font-size:14px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:480px;">Vagas de fundador são limitadas. Quando esgotar, o preço volta ao valor normal.</p>
-      </div>
-      <a href="#lista-espera" class="btn btn-primary" style="font-size:15px;padding:16px 38px;white-space:nowrap;flex-shrink:0;">Garantir desconto →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     STRIP DE FEATURES
-============================================================ -->
-<section class="features-strip">
-  <div class="container">
-    <div class="features-strip-grid">
-      <div class="strip-item fade-in">
-        <div class="strip-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-        <div><div class="strip-title">30 segundos</div><div class="strip-desc">Do nome do produto ao anúncio completo e otimizado.</div></div>
-      </div>
-      <div class="strip-item fade-in" style="transition-delay:0.08s;">
-        <div class="strip-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-        <div><div class="strip-title">Orientado a Resultado</div><div class="strip-desc">Foco em visibilidade e conversão real nos marketplaces.</div></div>
-      </div>
-      <div class="strip-item fade-in" style="transition-delay:0.16s;">
-        <div class="strip-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-        <div><div class="strip-title">6 Plataformas</div><div class="strip-desc">Padrão nativo para ML, Shopee, Amazon, TikTok e mais.</div></div>
-      </div>
-      <div class="strip-item fade-in" style="transition-delay:0.24s;">
-        <div class="strip-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
-        <div><div class="strip-title">Suporte Dedicado</div><div class="strip-desc">Estamos aqui para ajudar você a escalar.</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     ARSENAL DO AFILIADO — Multiplicação de conteúdo
-============================================================ -->
-<section class="arsenal" id="arsenal">
-  <div class="container">
-    <div class="arsenal-header fade-in">
-      <span class="overline">Arsenal do afiliado</span>
-      <h2 class="section-h2">Publique em volume.<br><span class="accent">Sem depender de copywriter.</span></h2>
+    <div class="section-header fade-in">
+      <span class="overline">Preço de Fundador — só até 5 de junho</span>
+      <h2 class="section-h2">Simples. Sem <span class="accent">surpresas.</span></h2>
       <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-      <p class="lead">Publique em volume, com qualidade consistente, sem depender de habilidades de copywriting. Um input — múltiplos formatos.</p>
+      <p class="section-lead">Assine antes do lançamento e trave o desconto para sempre enquanto mantiver ativo.</p>
     </div>
-    <div class="arsenal-layout">
-      <!-- Coluna 1: input + variações -->
-      <div class="fade-in" style="transition-delay:0.05s;">
-        <div class="arsenal-col-title">Entrada única</div>
-        <div class="arsenal-input-box">
-          <div class="arsenal-input-label">Link de afiliado + nome do produto</div>
-          <div class="arsenal-input-val">Tênis Masculino Couro Premium</div>
-        </div>
-        <div class="arsenal-col-title">Variações de abordagem</div>
-        <div class="arsenal-variations">
-          <div class="arsenal-var"><div class="arsenal-var-dot"></div>Foco em Preço</div>
-          <div class="arsenal-var"><div class="arsenal-var-dot"></div>Foco em Qualidade</div>
-          <div class="arsenal-var"><div class="arsenal-var-dot"></div>Foco em Urgência</div>
-        </div>
+    <div class="planos-grid">
+      <!-- Básico -->
+      <div class="plano-card fade-in" style="transition-delay:0.08s;">
+        <p class="plano-scope">1 marketplace</p>
+        <p class="plano-name">Básico</p>
+        <p class="plano-old">R$47/mês</p>
+        <div class="plano-val"><sup>R$</sup>37<sub>/mês</sub></div>
+        <span class="plano-save">Economize R$10/mês</span>
+        <div class="plano-sep"></div>
+        <ul class="plano-list">
+          <li class="plano-item"><span class="plano-check">✓</span>Geração ilimitada de anúncios</li>
+          <li class="plano-item"><span class="plano-check">✓</span>1 marketplace à escolha</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Histórico completo</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Suporte por e-mail</li>
+        </ul>
+        <a href="#lista-espera" class="btn btn-outline plano-btn">Entrar na lista →</a>
       </div>
-      <!-- Coluna 2: outputs -->
-      <div class="fade-in" style="transition-delay:0.12s;">
-        <div class="arsenal-col-title">Conteúdos gerados</div>
-        <div class="arsenal-outputs">
-          <div class="arsenal-output">
-            <div class="arsenal-output-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></div>
-            <div class="arsenal-output-name">Legenda para Instagram</div>
-          </div>
-          <div class="arsenal-output">
-            <div class="arsenal-output-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.79a16 16 0 0 0 6.29 6.29l1.85-1.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-            <div class="arsenal-output-name">Texto para WhatsApp</div>
-          </div>
-          <div class="arsenal-output">
-            <div class="arsenal-output-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h10"/></svg></div>
-            <div class="arsenal-output-name">Título para Marketplace</div>
-          </div>
-          <div class="arsenal-output">
-            <div class="arsenal-output-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-            <div class="arsenal-output-name">Chamada para E-mail</div>
-          </div>
-          <div class="arsenal-output">
-            <div class="arsenal-output-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7B3FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-            <div class="arsenal-output-name">Tags para SEO de Blog</div>
-          </div>
-        </div>
-      </div>
-      <!-- Coluna 3: destaque -->
-      <div class="arsenal-highlight fade-in" style="transition-delay:0.2s;">
-        <div class="arsenal-highlight-title">Multiplicação de Conteúdo Instantânea. Escala em múltiplos canais.</div>
-        <div class="arsenal-highlight-desc">Um único input gera conteúdo profissional para todos os seus canais de venda e comunicação — sem retrabalho, sem inconsistência.</div>
+      <!-- Pro -->
+      <div class="plano-card popular fade-in" style="transition-delay:0.18s;">
+        <div class="popular-tag">Mais popular</div>
+        <p class="plano-scope">Todos os marketplaces</p>
+        <p class="plano-name">Pro</p>
+        <p class="plano-old">R$97/mês</p>
+        <div class="plano-val"><sup>R$</sup>67<sub>/mês</sub></div>
+        <span class="plano-save">Economize R$30/mês</span>
+        <div class="plano-sep"></div>
+        <ul class="plano-list">
+          <li class="plano-item"><span class="plano-check">✓</span>Geração ilimitada</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Todos os 6 marketplaces</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Histórico completo</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Suporte prioritário</li>
+          <li class="plano-item"><span class="plano-check">✓</span>Acesso antecipado às próximas fases</li>
+        </ul>
+        <a href="#lista-espera" class="btn btn-primary plano-btn">Garantir acesso Pro →</a>
       </div>
     </div>
+    <p class="planos-note fade-in">* Preço de Fundador garantido enquanto a assinatura estiver ativa. Após o lançamento o valor retorna ao preço normal.</p>
   </div>
 </section>
 
 <!-- ============================================================
-     MULTI-PLATAFORMA EM UM ÚNICO FLUXO
-============================================================ -->
-<section class="multiplatform">
-  <div class="container">
-    <div class="multiplatform-header fade-in">
-      <span class="overline">Multi-plataforma</span>
-      <h2 class="section-h2">Um input. <span class="accent">Seis plataformas.</span></h2>
-      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-    </div>
-    <div class="multiplatform-layout fade-in" style="transition-delay:0.1s;">
-      <div class="mp-input">
-        <div class="mp-input-title">Input Único</div>
-        <div class="mp-input-desc">O vendedor preenche os dados apenas uma vez. A Rankeia formata para cada canal automaticamente.</div>
-      </div>
-      <div class="mp-connector">
-        <div class="mp-line"></div>
-      </div>
-      <div class="mp-platforms">
-        <div class="mp-platform"><div class="mp-platform-name"><div class="mp-platform-dot" style="background:#FFB800;"></div>Mercado Livre</div><div class="mp-native-badge">Padrão Nativo</div></div>
-        <div class="mp-platform"><div class="mp-platform-name"><div class="mp-platform-dot" style="background:#F57C00;"></div>Shopee</div><div class="mp-native-badge">Padrão Nativo</div></div>
-        <div class="mp-platform"><div class="mp-platform-name"><div class="mp-platform-dot" style="background:#1565C0;"></div>Amazon</div><div class="mp-native-badge">Padrão Nativo</div></div>
-        <div class="mp-platform"><div class="mp-platform-name"><div class="mp-platform-dot" style="background:#E53935;"></div>TikTok Shop</div><div class="mp-native-badge">Padrão Nativo</div></div>
-        <div class="mp-platform"><div class="mp-platform-name"><div class="mp-platform-dot" style="background:#1E88E5;"></div>Magalu</div><div class="mp-native-badge">Padrão Nativo</div></div>
-        <div class="mp-platform"><div class="mp-platform-name"><div class="mp-platform-dot" style="background:#E53935;"></div>Americanas</div><div class="mp-native-badge">Padrão Nativo</div></div>
-      </div>
-    </div>
-    <p class="mp-footer-note fade-in" style="transition-delay:0.2s;"><strong>Receba o anúncio formatado para todos os canais simultaneamente.</strong><br>Sem reescrever. Sem trabalho duplicado.</p>
-  </div>
-</section>
-
-<!-- ============================================================
-     COBERTURA NATIVA DE ECOSSISTEMA — Tabela
-============================================================ -->
-<section class="coverage">
-  <div class="container">
-    <div class="coverage-header fade-in">
-      <span class="overline">Cobertura completa</span>
-      <h2 class="section-h2">Cobertura Nativa de <span class="accent">Ecossistema</span></h2>
-      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-    </div>
-    <div class="coverage-table-wrap fade-in" style="transition-delay:0.1s;">
-      <table class="coverage-table">
-        <thead>
-          <tr>
-            <th>Marketplace</th>
-            <th>Título</th>
-            <th>Descrição</th>
-            <th>Tags</th>
-            <th>Padrão Nativo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="mk-row-dot" style="background:#FFB800;"></span>Mercado Livre</td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-          </tr>
-          <tr>
-            <td><span class="mk-row-dot" style="background:#F57C00;"></span>Shopee</td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-          </tr>
-          <tr>
-            <td><span class="mk-row-dot" style="background:#1565C0;"></span>Amazon</td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-          </tr>
-          <tr>
-            <td><span class="mk-row-dot" style="background:#E53935;"></span>TikTok Shop</td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-          </tr>
-          <tr>
-            <td><span class="mk-row-dot" style="background:#1E88E5;"></span>Magalu</td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-          </tr>
-          <tr>
-            <td><span class="mk-row-dot" style="background:#E53935;"></span>Americanas</td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-            <td><span class="coverage-check">✓</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     EQUAÇÃO DE ROI EM TEMPO
-============================================================ -->
-<section class="roi">
-  <div class="container">
-    <div class="roi-header fade-in">
-      <span class="overline">Equação de ROI</span>
-      <h2 class="section-h2">Recupere <span class="accent">dias inteiros</span> de trabalho</h2>
-      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-    </div>
-    <p class="roi-sub fade-in" style="transition-delay:0.08s;">Quem tem 20, 50 ou 100 produtos recupera <strong>dias inteiros de trabalho por mês.</strong><br>Cadastro manual: média de 2h/produto. Rankeia: média de 5 min/produto.</p>
-    <div class="roi-grid">
-      <div class="roi-card fade-in" style="transition-delay:0.05s;">
-        <div class="roi-products">20 produtos / mês</div>
-        <div class="roi-comparison">
-          <div class="roi-bar-wrap">
-            <div class="roi-bar-val manual">40h</div>
-            <div class="roi-bar manual" style="height:120px;"></div>
-            <div class="roi-bar-label">Manual</div>
-          </div>
-          <div class="roi-bar-wrap">
-            <div class="roi-bar-val rankeia">1.6h</div>
-            <div class="roi-bar rankeia" style="height:8px;"></div>
-            <div class="roi-bar-label" style="color:var(--roxo);">Rankeia</div>
-          </div>
-        </div>
-        <div style="font-size:13px;color:var(--muted);">Você economiza <strong style="color:var(--roxo);">38,4 horas</strong> por mês</div>
-      </div>
-      <div class="roi-card fade-in" style="transition-delay:0.12s;">
-        <div class="roi-products">50 produtos / mês</div>
-        <div class="roi-comparison">
-          <div class="roi-bar-wrap">
-            <div class="roi-bar-val manual">100h</div>
-            <div class="roi-bar manual" style="height:160px;"></div>
-            <div class="roi-bar-label">Manual</div>
-          </div>
-          <div class="roi-bar-wrap">
-            <div class="roi-bar-val rankeia">4.1h</div>
-            <div class="roi-bar rankeia" style="height:10px;"></div>
-            <div class="roi-bar-label" style="color:var(--roxo);">Rankeia</div>
-          </div>
-        </div>
-        <div style="font-size:13px;color:var(--muted);">Você economiza <strong style="color:var(--roxo);">95,9 horas</strong> por mês</div>
-      </div>
-      <div class="roi-card fade-in" style="transition-delay:0.2s;">
-        <div class="roi-products">100 produtos / mês</div>
-        <div class="roi-comparison">
-          <div class="roi-bar-wrap">
-            <div class="roi-bar-val manual">200h</div>
-            <div class="roi-bar manual" style="height:200px;"></div>
-            <div class="roi-bar-label">Manual</div>
-          </div>
-          <div class="roi-bar-wrap">
-            <div class="roi-bar-val rankeia">8.3h</div>
-            <div class="roi-bar rankeia" style="height:12px;"></div>
-            <div class="roi-bar-label" style="color:var(--roxo);">Rankeia</div>
-          </div>
-        </div>
-        <div style="font-size:13px;color:var(--muted);">Você economiza <strong style="color:var(--roxo);">191,7 horas</strong> por mês</div>
-      </div>
-    </div>
-    <div class="roi-legend fade-in">
-      <div class="roi-legend-item"><div class="roi-legend-dot" style="background:rgba(255,255,255,0.15);"></div>Cadastro Manual (média 2h/produto)</div>
-      <div class="roi-legend-item"><div class="roi-legend-dot" style="background:var(--roxo);"></div>Rankeia (média 5 min/produto)</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     DEPOIMENTOS
-============================================================ -->
-<section class="testimonials" id="depoimentos">
-  <div class="container">
-    <div class="testimonials-header fade-in">
-      <span class="overline">O que dizem</span>
-      <h2 class="section-h2">Vendedores que pararam<br>de <span class="accent">travar</span></h2>
-      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-    </div>
-    <div class="testi-grid">
-      <div class="testi-card fade-in" style="transition-delay:0.05s;">
-        <div class="testi-quote">"</div>
-        <p class="testi-text">Eu não parava pra postar produto novo porque sabia que ia perder muito tempo. Com o Rankeia consigo cadastrar em minutos e ainda fico tranquilo que o título está certinho.</p>
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#7B3FF2,#5200CC);">P</div>
-          <div><div class="testi-name">Pedro Almeida</div><div class="testi-role">Moda masculina · Shopee & TikTok Shop</div></div>
-        </div>
-      </div>
-      <div class="testi-card fade-in" style="transition-delay:0.13s;">
-        <div class="testi-quote">"</div>
-        <p class="testi-text">Meu produto estava validado mas com pouca exposição. Depois de otimizar os títulos com a Rankeia as visitas triplicaram em menos de duas semanas. Impressionante.</p>
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#E53935,#B71C1C);">A</div>
-          <div><div class="testi-name">Ana Carolina</div><div class="testi-role">Acessórios femininos · Mercado Livre</div></div>
-        </div>
-      </div>
-      <div class="testi-card fade-in" style="transition-delay:0.22s;">
-        <div class="testi-quote">"</div>
-        <p class="testi-text">Vendo em 3 plataformas ao mesmo tempo e o trabalho dobrou. O Rankeia me poupa pelo menos 4 horas por semana — tempo que uso pra focar nas vendas de verdade.</p>
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#1565C0,#0D47A1);">C</div>
-          <div><div class="testi-name">Carlos Eduardo</div><div class="testi-role">Eletrônicos · Amazon & Shopee</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     LISTA DE ESPERA — Acesso Fundador
+     LISTA DE ESPERA  (id="lista-espera" — NÃO ALTERAR O ID)
 ============================================================ -->
 <section class="waitlist-section" id="lista-espera">
   <div class="container">
-    <div style="text-align:center;margin-bottom:56px;" class="fade-in">
-      <span class="overline">Acesso Fundador</span>
-      <h2 class="section-h2">Entre na lista e <span class="accent">garanta seu desconto</span></h2>
-      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-      <p style="font-size:16px;color:var(--muted);max-width:540px;margin:16px auto 0;line-height:1.7;">Lançamento em <strong style="color:var(--text);">20 de Maio de 2026</strong>. Quem entrar na lista hoje garante preço de fundador — <strong style="color:var(--roxo);">válido apenas enquanto houver vagas.</strong></p>
-    </div>
-    <div class="waitlist-grid fade-in" style="transition-delay:0.1s;">
-      <!-- Formulário -->
-      <div>
-        <div class="waitlist-form-box">
-          <p class="wf-title">Reserve sua vaga agora</p>
-          <p class="wf-sub">Preencha e garanta o acesso no dia do lançamento.</p>
-          <form id="waitlist-form" onsubmit="submitWaitlist(event)">
-            <div class="wf-field">
-              <label for="wl-name">Seu nome</label>
-              <input type="text" id="wl-name" required placeholder="Como posso te chamar?" />
-            </div>
-            <div class="wf-field">
-              <label for="wl-email">E-mail</label>
+    <div class="waitlist-inner">
+
+      <!-- Conteúdo + Formulário -->
+      <div class="fade-in">
+        <div class="wl-urgency">🔴 Vagas de Fundador se esgotando — garanta a sua</div>
+        <h2 class="wl-title">Garanta seu lugar<br>antes do lançamento</h2>
+        <p class="wl-sub">60% de desconto exclusivo para os primeiros fundadores. Acesso liberado em 5 de junho.</p>
+
+        <div id="waitlist-form-wrap">
+          <form id="waitlist-form" class="wl-form" onsubmit="submitWaitlist(event)">
+            <div class="wl-field">
               <input type="email" id="wl-email" required placeholder="seu@email.com" />
             </div>
-            <div class="wf-field" style="margin-bottom:24px;">
-              <label for="wl-phone">WhatsApp <span style="color:var(--muted);font-size:12px;">(opcional)</span></label>
-              <input type="tel" id="wl-phone" placeholder="(27) 99999-9999" />
+            <div class="wl-field">
+              <input type="tel" id="wl-phone" placeholder="(11) 99999-9999" />
             </div>
-            <button type="submit" class="btn btn-primary wf-submit">Garantir minha vaga Fundador →</button>
+            <div class="wl-field">
+              <select id="wl-marketplace">
+                <option value="" disabled selected>Qual marketplace você mais usa?</option>
+                <option value="ml">Mercado Livre</option>
+                <option value="shopee">Shopee</option>
+                <option value="amazon">Amazon</option>
+                <option value="tiktok">TikTok Shop</option>
+                <option value="magalu">Magalu</option>
+                <option value="americanas">Americanas</option>
+                <option value="todos">Todos</option>
+              </select>
+            </div>
+            <button type="submit" class="wl-submit">Quero ser Fundador →</button>
           </form>
-          <div class="waitlist-success" id="waitlist-success">
-            <div class="ws-emoji">🎉</div>
-            <p class="ws-title">Você está na lista!</p>
-            <p class="ws-desc">Avisaremos no seu e-mail no dia do lançamento com seu link de acesso exclusivo e o desconto de fundador garantido.</p>
-          </div>
+          <p class="wl-privacy">🔒 Sem spam. Seus dados estão protegidos.</p>
         </div>
-        <p class="waitlist-privacy">🔒 Seus dados estão seguros. Sem spam, prometido.</p>
-      </div>
-      <!-- Benefícios + Preços Fundador -->
-      <div>
-        <div class="founder-prices">
-          <p class="founder-prices-label">Preço Fundador — apenas no lançamento</p>
-          <div class="founder-price-row">
-            <div><p class="fpr-name">Starter</p><p class="fpr-sub">Até 30 anúncios/mês</p></div>
-            <div style="text-align:right;"><p class="fpr-price-old">R$47/mês</p><p class="fpr-price-new">R$37<sub>/mês</sub></p></div>
+
+        <!-- Estado de sucesso — exibido após submit -->
+        <div id="waitlist-success">
+          <!--
+            MASCOTE RANK — Formulário de sucesso (pose: joinha)
+            Substituir este bloco por:
+            <img src="mascote-rank-joinha.png"
+                 alt="Rank comemorando"
+                 style="max-width:160px;margin:0 auto 20px;display:block;" />
+          -->
+          <div class="rank-placeholder" data-pose="joinha"
+               style="max-width:160px;aspect-ratio:1/1;margin:0 auto 20px;border-radius:16px;min-height:0;">
+            <span class="rp-emoji" style="font-size:36px;">🤖</span>
+            <span class="rp-label" style="font-size:11px;">Rank — pose: joinha</span>
+            <span class="rp-hint" style="font-size:9px;">substituir por mascote-rank-joinha.png</span>
           </div>
-          <div class="founder-price-row">
-            <div><p class="fpr-name">Crescimento</p><p class="fpr-sub">Anúncios ilimitados</p></div>
-            <div style="text-align:right;"><p class="fpr-price-old">R$97/mês</p><p class="fpr-price-new">R$67<sub>/mês</sub></p></div>
-          </div>
-          <div class="founder-price-row">
-            <div><p class="fpr-name">Escala</p><p class="fpr-sub">100+ produtos</p></div>
-            <div style="text-align:right;"><p class="fpr-price-old">R$197/mês</p><p class="fpr-price-new">R$137<sub>/mês</sub></p></div>
-          </div>
+          <h3>Você está na lista! 🎉</h3>
+          <p>Vamos te avisar no dia 5 de junho com seu link de acesso e desconto de Fundador. Fique de olho no seu e-mail.</p>
+          <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="ws-ig-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            Siga @rankeiaapp para não perder nenhuma novidade →
+          </a>
         </div>
-        <div class="founder-benefits">
-          <p class="founder-benefits-title">Quem entra na lista garante:</p>
-          <div class="fb-item"><span class="fb-check">✓</span>Preço de fundador travado vitalício</div>
-          <div class="fb-item"><span class="fb-check">✓</span>Acesso no dia do lançamento (20/05)</div>
-          <div class="fb-item"><span class="fb-check">✓</span>Onboarding exclusivo para fundadores</div>
-          <div class="fb-item"><span class="fb-check">✓</span>Garantia incondicional de 7 dias</div>
+      </div>
+
+      <!-- Visual — Mascote Rank (pose: trofeu) -->
+      <div class="wl-visual fade-in" style="transition-delay:0.15s;">
+        <!--
+          MASCOTE RANK — Lista de espera / CTA (pose: trofeu)
+          Substituir este bloco por:
+          <img src="mascote-rank-trofeu.png"
+               alt="Rank com troféu"
+               class="rank-float"
+               style="max-width:380px;width:100%;display:block;" />
+        -->
+        <div class="rank-placeholder rank-float" data-pose="trofeu">
+          <span class="rp-emoji">🤖</span>
+          <span class="rp-label">Rank — pose: trofeu</span>
+          <span class="rp-hint">substituir por mascote-rank-trofeu.png</span>
         </div>
-        <div class="waitlist-deadline">⏳ Oferta válida até o lançamento em 20/05/2026<br>ou até esgotar as vagas de fundador.</div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- ============================================================
-     PREÇOS — Planos Feitos para Escalar
-============================================================ -->
-<section class="pricing" id="precos">
-  <div class="container">
-    <div class="pricing-header fade-in">
-      <span class="overline">Planos feitos para escalar</span>
-      <h2 class="section-h2">Justo para o tamanho<br>da <span class="accent">sua operação</span></h2>
-      <div class="title-sep"><div class="title-sep-line"></div><div class="title-sep-dot"></div><div class="title-sep-line"></div></div>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card fade-in" style="transition-delay:0.05s;">
-        <div class="price-founder-badge">Fundador</div>
-        <div class="price-name">Starter</div>
-        <div class="price-old">R$47/mês</div>
-        <div class="price-val"><sup>R$</sup>37<sub>/mês</sub></div>
-        <p class="price-desc">Para quem está começando a profissionalizar os anúncios.</p>
-        <ul class="price-list">
-          <li class="price-item"><span class="price-check">✓</span>Até 30 anúncios por mês</li>
-          <li class="price-item"><span class="price-check">✓</span>Mercado Livre e Shopee</li>
-          <li class="price-item"><span class="price-check">✓</span>Título + descrição + tags</li>
-          <li class="price-item"><span class="price-check">✓</span>Suporte por e-mail</li>
-        </ul>
-        <div class="price-ideal"><strong>Ideal para</strong>Iniciantes com até 20 produtos ativos.</div>
-        <a href="#lista-espera" class="btn btn-outline price-btn">Garantir desconto Fundador</a>
-      </div>
-      <div class="price-card popular fade-in" style="transition-delay:0.12s;">
-        <div class="popular-tag">Mais popular</div>
-        <div class="price-founder-badge">Fundador</div>
-        <div class="price-name">Crescimento</div>
-        <div class="price-old">R$97/mês</div>
-        <div class="price-val"><sup>R$</sup>67<sub>/mês</sub></div>
-        <p class="price-desc">Para vendedores com operação em crescimento.</p>
-        <ul class="price-list">
-          <li class="price-item"><span class="price-check">✓</span>Anúncios ilimitados</li>
-          <li class="price-item"><span class="price-check">✓</span>Todas as 6 plataformas</li>
-          <li class="price-item"><span class="price-check">✓</span>Análise básica de concorrência</li>
-          <li class="price-item"><span class="price-check">✓</span>Suporte prioritário</li>
-        </ul>
-        <div class="price-ideal"><strong>Ideal para</strong>Vendedores com operação em crescimento.</div>
-        <a href="#lista-espera" class="btn btn-primary price-btn">Garantir desconto Fundador</a>
-      </div>
-      <div class="price-card fade-in" style="transition-delay:0.2s;">
-        <div class="price-founder-badge">Fundador</div>
-        <div class="price-name">Escala</div>
-        <div class="price-old">R$197/mês</div>
-        <div class="price-val"><sup>R$</sup>137<sub>/mês</sub></div>
-        <p class="price-desc">Para operações avançadas com 100+ produtos ativos.</p>
-        <ul class="price-list">
-          <li class="price-item"><span class="price-check">✓</span>Tudo do Crescimento</li>
-          <li class="price-item"><span class="price-check">✓</span>Relatório de performance por produto</li>
-          <li class="price-item"><span class="price-check">✓</span>Acesso à API para integração</li>
-          <li class="price-item"><span class="price-check">✓</span>Suporte dedicado</li>
-        </ul>
-        <div class="price-ideal"><strong>Ideal para</strong>Operações com 100+ produtos ativos.</div>
-        <a href="#lista-espera" class="btn btn-outline price-btn">Garantir desconto Fundador</a>
-      </div>
-    </div>
-    <p class="pricing-note fade-in">🛡️ <span>Garantia incondicional de 7 dias</span> — não ficou satisfeito, devolvemos 100% do valor.</p>
-    <p class="pricing-note fade-in" style="margin-top:10px;color:rgba(138,144,162,0.7);font-size:13px;">⏳ Preços de fundador válidos apenas até 20/05/2026 ou até esgotar as vagas.</p>
-  </div>
-</section>
-
-<!-- ============================================================
-     CTA FINAL — Pare de digitar. Comece a escalar.
-============================================================ -->
-<section class="cta-final">
-  <div class="container">
-    <h2 class="cta-final-h2 fade-in">Pare de digitar.<br>Comece a <span style="color:var(--roxo);">escalar.</span></h2>
-    <p class="cta-final-sub fade-in" style="transition-delay:0.1s;">Lançamento em 20 de Maio de 2026. Entre na lista e garanta o preço de fundador antes que as vagas acabem.</p>
-    <p class="cta-final-sub2 fade-in" style="transition-delay:0.15s;">Garantia incondicional de 7 dias. Sem contratos. Cancele quando quiser.</p>
-    <div class="fade-in" style="transition-delay:0.22s;">
-      <a href="#lista-espera" class="btn btn-primary cta-final-btn">Garantir meu acesso Fundador →</a>
-    </div>
-    <div class="cta-guarantee fade-in" style="transition-delay:0.32s;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-      Garantia incondicional de 7 dias.
-    </div>
-    <p class="cta-recover fade-in" style="transition-delay:0.4s;">Acesse e recupere seu tempo.</p>
-  </div>
-</section>
-
-<!-- ============================================================
-     CTA BAR — Contato
-============================================================ -->
-<section class="cta-bar">
-  <div class="container">
-    <div class="cta-bar-inner">
-      <div class="fade-in">
-        <p class="cta-bar-title">Pronto para vender<br><span class="purple">muito mais?</span></p>
-      </div>
-      <div class="cta-bar-mid fade-in" style="transition-delay:0.1s;">
-        <p class="cta-bar-sub">Vamos otimizar sua esteira juntos.<br>Comece hoje mesmo.</p>
-        <a href="#lista-espera" class="btn btn-primary">Garantir desconto →</a>
-      </div>
-      <div class="cta-bar-right fade-in" style="transition-delay:0.2s;">
-        <div class="cta-contact-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.79a16 16 0 0 0 6.29 6.29l1.85-1.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+55 (27) 99999-0000</div>
-        <div class="cta-contact-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>contato@rankeia.com.br</div>
-        <div class="cta-contact-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>www.rankeia.com.br</div>
-        <a href="#" class="cta-whatsapp"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>Fale no WhatsApp</a>
-      </div>
     </div>
   </div>
 </section>
@@ -1270,23 +1116,51 @@
 ============================================================ -->
 <footer class="footer">
   <div class="container">
-    <div class="footer-inner">
-      <a href="#" class="logo">
-        <div class="logo-icon" style="width:30px;height:30px;border-radius:7px;"><svg width="16" height="16" viewBox="0 0 36 36" fill="none"><path d="M8 28L16 14L22 21L27 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="9" r="3.5" fill="white"/></svg></div>
-        <span class="logo-mark" style="font-size:17px;">rankeia</span>
-      </a>
-      <nav class="footer-links">
-        <a href="#motor">Como funciona</a>
-        <a href="#precos">Preços</a>
-        <a href="#lista-espera" style="color:var(--roxo);font-weight:600;">Lista de Espera</a>
-        <a href="#">Termos de Uso</a>
-        <a href="#">Privacidade</a>
-      </nav>
+    <div class="footer-grid">
+      <!-- Coluna esquerda: marca + Instagram -->
       <div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:3px;">Um produto da Bro System · Serra, ES, Brasil</div>
-        <div class="footer-copy">© 2026 Rankeia. Todos os direitos reservados.</div>
+        <a href="#" class="logo" style="display:inline-flex;margin-bottom:6px;">
+          <div class="logo-icon" style="width:32px;height:32px;border-radius:8px;">
+            <svg width="17" height="17" viewBox="0 0 36 36" fill="none">
+              <path d="M8 28L16 14L22 21L27 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="9" r="3.5" fill="white"/>
+            </svg>
+          </div>
+          <span class="logo-mark" style="font-size:18px;">rankeia</span>
+        </a>
+        <p class="footer-brand-desc">Otimização de anúncios com IA para vendedores de marketplace.</p>
+        <p class="footer-bro">Um produto da BRO Growth</p>
+        <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="footer-ig">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          @rankeiaapp
+        </a>
+      </div>
+      <!-- Coluna direita: links -->
+      <div>
+        <p class="footer-col-title">Navegação</p>
+        <nav class="footer-links">
+          <a href="#o-que-e">O que é</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#planos">Planos</a>
+          <a href="#lista-espera" class="hl">Lançamento</a>
+          <a href="https://www.instagram.com/rankeiaapp/" target="_blank" rel="noopener" class="hl">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            @rankeiaapp
+          </a>
+        </nav>
       </div>
     </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Rankeia · Um produto da BRO Growth · Todos os direitos reservados
   </div>
 </footer>
 
@@ -1294,7 +1168,7 @@
      JAVASCRIPT
 ============================================================ -->
 <script>
-  /* Hamburger */
+  /* ── Hamburger ── */
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
   hamburger.addEventListener('click', () => {
@@ -1310,14 +1184,15 @@
     });
   });
 
-  /* CTA nav desktop */
+  /* ── Nav CTA desktop ── */
   function checkNavCta() {
-    document.getElementById('nav-cta-desktop').style.display = window.innerWidth > 960 ? 'inline-flex' : 'none';
+    document.getElementById('nav-cta-desktop').style.display =
+      window.innerWidth > 960 ? 'inline-flex' : 'none';
   }
   checkNavCta();
   window.addEventListener('resize', checkNavCta);
 
-  /* Smooth scroll */
+  /* ── Smooth scroll (compensa altura do nav fixo) ── */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const id = a.getAttribute('href');
@@ -1325,58 +1200,75 @@
       const el = document.querySelector(id);
       if (!el) return;
       e.preventDefault();
-      window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 76, behavior: 'smooth' });
+      const offset = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--offset')) || 116;
+      window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - offset, behavior: 'smooth' });
     });
   });
 
-  /* Fade-in */
+  /* ── Fade-in via IntersectionObserver ── */
   const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
   }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
   document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 
-  /* Nav opacidade */
+  /* ── Nav opacidade ao rolar ── */
   const nav = document.querySelector('.nav');
   window.addEventListener('scroll', () => {
-    nav.style.background = scrollY > 24 ? 'rgba(10,10,15,0.97)' : 'rgba(10,10,15,0.85)';
+    nav.style.background = scrollY > 24
+      ? 'rgba(10,10,15,0.97)'
+      : 'rgba(10,10,15,0.85)';
   }, { passive: true });
 
-  /* ============================================================
-     COUNTDOWN — Lançamento 20/05/2026 00:00:00 BRT (UTC-3)
-  ============================================================ */
-  (function countdown() {
-    const target = new Date('2026-05-20T00:00:00-03:00').getTime();
-    const el = document.getElementById('ub-timer');
+  /* ── Countdown — Lançamento 05/06/2026 00:00:00 BRT (UTC-3) ── */
+  (function startCountdown() {
+    const launchDate = new Date('2026-06-05T00:00:00-03:00');
+
     function tick() {
-      const now = Date.now();
-      const diff = target - now;
-      if (diff <= 0) { el.textContent = 'Lançado! 🚀'; return; }
+      const diff = launchDate.getTime() - Date.now();
+      if (diff <= 0) {
+        document.querySelectorAll('.countdown-display').forEach(el => {
+          el.textContent = '🚀 O Rankeia está no ar!';
+        });
+        return;
+      }
       const d = Math.floor(diff / 86400000);
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      el.textContent =
-        String(d).padStart(2,'0') + 'd ' +
-        String(h).padStart(2,'0') + 'h ' +
-        String(m).padStart(2,'0') + 'm ' +
-        String(s).padStart(2,'0') + 's';
+      const str =
+        String(d).padStart(2,'0') + 'd · ' +
+        String(h).padStart(2,'0') + 'h · ' +
+        String(m).padStart(2,'0') + 'min · ' +
+        String(s).padStart(2,'0') + 'seg';
+      document.querySelectorAll('.countdown-display').forEach(el => {
+        el.textContent = str;
+      });
     }
     tick();
     setInterval(tick, 1000);
   })();
 
-  /* ============================================================
-     FORMULÁRIO LISTA DE ESPERA
-  ============================================================ */
+  /* ── Formulário Lista de Espera ── */
   function submitWaitlist(e) {
     e.preventDefault();
-    const name  = document.getElementById('wl-name').value.trim();
     const email = document.getElementById('wl-email').value.trim();
-    if (!name || !email) return;
-    /* Aqui você pode integrar com sua API / Mailchimp / Brevo */
-    console.log('Waitlist submission:', { name, email, phone: document.getElementById('wl-phone').value });
-    document.getElementById('waitlist-form').style.display = 'none';
-    document.getElementById('waitlist-success').style.display = 'block';
+    if (!email) return;
+
+    /* ── Integrar com sua API / Mailchimp / Brevo aqui ──
+       Exemplo: fetch('/api/waitlist', { method: 'POST', body: JSON.stringify({ email, phone, marketplace }) })
+    */
+    console.log('Waitlist submission:', {
+      email,
+      phone:       document.getElementById('wl-phone').value,
+      marketplace: document.getElementById('wl-marketplace').value
+    });
+
+    /* Esconde form, exibe mensagem de sucesso */
+    document.getElementById('waitlist-form-wrap').style.display = 'none';
+    document.getElementById('waitlist-success').style.display   = 'block';
   }
 </script>
 </body>
